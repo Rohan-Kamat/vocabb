@@ -28,6 +28,7 @@ class Styles {
             return const Color(0xFF222831);
           })
       ),
+      fontFamily: 'Fira Sans',
       textTheme: const TextTheme(
         displayMedium: TextStyle(
           color: Color(0xFF222831),

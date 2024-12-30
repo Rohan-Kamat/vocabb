@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
+import 'package:vocabb/widgets/poolTabWidget.dart';
+import 'package:vocabb/widgets/searchBarWidget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,6 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
 
   @override
   void initState() {
@@ -25,6 +28,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: const PreferredSize(
@@ -33,7 +37,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ),
         body: Column(
           children: [
-            SizedBox(height: 50,),
+            SizedBox(height: size.height*0.054,),
             Container(
               child: Column(
                 children: [
@@ -56,15 +60,37 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       isScrollable: false, // Prevent tabs from scrolling
                     ),
                   ),
-                  SizedBox(height: 50),
-                  SizedBox(
-                    height: 400,
+                  SizedBox(height: size.height*0.04),
+                  Container(
+                    width: size.width*(0.8),
+                    child: SearchBarWidget(),
+                  ),
+                  SizedBox(height: 45),
+                  Container(
+                    height: 500,
+                    padding: EdgeInsets.only(left: 20, right: 20),
                     child: TabBarView(
                       controller: _tabController,
                       children: [
                         Center(child: Text("Recents Page")),
                         Center(child: Text("Tests Page")),
-                        Center(child: Text("Pools Page")),
+
+                        ListView.separated(
+                            itemBuilder: (context, index) {
+                              return const PoolTabWidget(
+                                  title: "Name",
+                                  userName: "username",
+                                  rating: 3,
+                                  totalWords: 50,
+                                  masteredWords: 30
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                height: 12,
+                              );
+                            },
+                            itemCount: 5)
                       ],
                     )
                   )
