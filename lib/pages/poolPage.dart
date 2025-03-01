@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
+import 'package:vocabb/widgets/poolNameWidget.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
 import 'package:vocabb/widgets/wordListWidget.dart';
 
@@ -40,11 +41,7 @@ class PoolPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: TextStyle(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 36
-                      )),
+                      PoolNameWidget(poolName: title),
                       IconButton(
                         onPressed: () {
                           print("Pool settings pressed");
@@ -53,6 +50,7 @@ class PoolPage extends StatelessWidget {
                       )
                     ],
                   ),
+                  SizedBox(height: 4,),
                   Text(userName, style: TextStyle(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       fontSize: 16

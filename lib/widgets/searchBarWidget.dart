@@ -17,23 +17,19 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
         borderRadius: BorderRadius.circular(20), // Rounded corners
       ),
       child: TextField(
-        style: TextStyle(
+        style: const TextStyle(
           color: Color(0xFFEEEEEE), // Text color
         ),
-        cursorColor: Color(0xFFEEEEEE), // Cursor color
+        cursorColor: const Color(0xFFEEEEEE), // Cursor color
         decoration: InputDecoration(
           hintText: "search",
           hintStyle: TextStyle(
-            color: Color(0xFFEEEEEE).withOpacity(0.7), // Hint text color
+            color: const Color(0xFFEEEEEE).withOpacity(0.7), // Hint text color
           ),
           border: InputBorder.none, // No default border
-          // prefixIcon: Icon(
-          //   Icons.search,
-          //   color: Color(0xFFEEEEEE), // Icon color
-          // ),
-          contentPadding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+          contentPadding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
           suffixIcon: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.search, // Search action button
               color: Color(0xFFEEEEEE),
             ),
