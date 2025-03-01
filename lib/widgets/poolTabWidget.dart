@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
 
+import '../pages/poolPage.dart';
+
 class PoolTabWidget extends StatelessWidget {
 
   final String title;
@@ -20,14 +22,19 @@ class PoolTabWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 136,
+    return InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PoolPage(
+            title: title, userName: userName, rating: rating)));
+      },
+      splashColor: Theme.of(context).scaffoldBackgroundColor,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), // Rounded corners
         ),
         elevation: 4,
         child: Container(
+          height: 136,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
@@ -41,6 +48,7 @@ class PoolTabWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(title, style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
@@ -50,14 +58,14 @@ class PoolTabWidget extends StatelessWidget {
                       Text(userName, style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.w300,
-                        fontSize: 11
+                        fontSize: 12
                       ))
                     ],
                   ),
-                  RatingWidget(rating: rating)
+                  RatingWidget(rating: rating, size: 13)
                 ],
               ),
-              SizedBox(height: 13,),
+              SizedBox(height: 18,),
               Text("${masteredWords}/${totalWords}", style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
                 fontWeight: FontWeight.w300,

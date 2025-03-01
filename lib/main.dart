@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocabb/pages/homePage.dart';
+import 'package:vocabb/pages/mainPage.dart';
 import 'package:vocabb/theme.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         title: 'Vocabb',
         debugShowCheckedModeBanner: false,
         theme: Styles.themeData(context),
-        home: const HomePage()
+        home: const MainPage()
       ),
     );
   }

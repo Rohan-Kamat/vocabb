@@ -3,21 +3,24 @@ import 'package:vocabb/widgets/poolTabWidget.dart';
 import 'package:vocabb/widgets/searchBarWidget.dart';
 import 'package:vocabb/widgets/testTabWidget.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class ExplorePage extends StatefulWidget {
+  const ExplorePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
+  final List<String> filters = [
+    "User",
+    "Date"
+  ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -40,13 +43,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 controller: _tabController,
                 indicator: const UnderlineTabIndicator(
                   borderSide: BorderSide(width: 3.0, color: Color(0xFF7BC74D)), // Custom underline
-                  insets: EdgeInsets.symmetric(horizontal: 25.0), // Adjust horizontal padding for compactness
+                  insets: EdgeInsets.symmetric(horizontal: 30.0), // Adjust horizontal padding for compactness
                 ),
                 indicatorPadding: const EdgeInsets.only(bottom: 8),// Green underline when selected
                 labelColor: const Color(0xFF7BC74D),     // Color for selected tab text
                 unselectedLabelColor: const Color(0xFF222831), // Color for unselected tab text
                 tabs: const [
-                  Tab(text: 'Recents'),
                   Tab(text: 'Tests'),
                   Tab(text: 'Pools'),
                 ],
@@ -56,7 +58,46 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             SizedBox(height: size.height*0.04),
             SizedBox(
               width: size.width*(0.8),
-              child: SearchBarWidget(),
+              child: const SearchBarWidget(),
+            ),
+            const SizedBox(height: 25,),
+            Container(
+              width: size.width*0.8,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  width: 0.2,
+                  color: Theme.of(context).colorScheme.tertiary
+                )
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text("Filter By", style: TextStyle(fontSize: 16),),
+                      SizedBox(width: 8,),
+                      DropdownMenu(
+                        dropdownMenuEntries: [
+                          DropdownMenuEntry(value: "User", label: "User"),
+                          DropdownMenuEntry(value: "Date", label: "Date")
+                        ],
+                        inputDecorationTheme: InputDecorationTheme(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.secondary,
+                          border: InputBorder.none,
+                          constraints: BoxConstraints(
+                            maxHeight: 35,
+                          ),
+                          iconColor: Theme.of(context).scaffoldBackgroundColor
+                        ),
+                        width: size.width*0.56,
+                      )
+                    ],
+                  )
+                ],
+              ),
+              
             ),
             SizedBox(height: 45),
             Container(
@@ -65,32 +106,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    ListView.separated(
-                        itemBuilder: (context, index) {
-                          return index & 1 == 1
-                              ? const TestTabWidget(
-                              title: "Test abc",
-                              userName: "xyz",
-                              rating: 4,
-                              isAttempted: true,
-                              timeTakenInMinutes: 67,
-                              totalTimeInMinutes: 90,
-                              score: 30,
-                              totalQuestions: 50)
-                              : const PoolTabWidget(
-                              title: "Name",
-                              userName: "username",
-                              rating: 3,
-                              totalWords: 50,
-                              masteredWords: 20
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 12,
-                          );
-                        },
-                        itemCount: 5),
                     ListView.separated(
                         itemBuilder: (context, index) {
                           return const TestTabWidget(

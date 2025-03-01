@@ -7,6 +7,7 @@ class Styles {
       primaryColor: const Color(0xFF7BC74D),
       colorScheme: ThemeData().colorScheme.copyWith(
         secondary: const Color(0xFF222831),
+        tertiary: const Color(0xFF393E46),
         brightness:  Brightness.light,
       ),
       cardColor: Colors.white,

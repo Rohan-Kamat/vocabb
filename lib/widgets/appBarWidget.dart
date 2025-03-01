@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 
 class AppBarWidget extends StatelessWidget {
-  const AppBarWidget({super.key});
+  final IconData leadingIcon;
+
+  const AppBarWidget({
+    super.key,
+    required this.leadingIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       leading: Builder(
         builder: (context) => IconButton(
-          icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.secondary,), // Drawer icon
+          icon: Icon(leadingIcon, color: Theme.of(context).colorScheme.secondary,), // Drawer icon
           onPressed: () {
-            print(5);
+            if (leadingIcon == Icons.chevron_left) {
+              Navigator.pop(context);
+            } else if (leadingIcon == Icons.menu) {
+              print("Menu");
+            }
           },
         ),
       ),
