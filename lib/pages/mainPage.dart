@@ -62,13 +62,18 @@ class _MainPageState extends State<MainPage> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(30),
-        child: AppBarWidget(leadingIcon: Icons.menu,),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(30),
+        child: AppBarWidget(
+            leadingIcon: Icons.menu,
+            action: () {
+              print("Menu");
+            }),
       ),
       body: SingleChildScrollView(child: _pages[_selectedPage]),
       bottomNavigationBar: Container(

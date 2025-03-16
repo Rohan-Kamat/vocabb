@@ -1,5 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vocabb/models/wordModel.dart';
+import 'package:vocabb/pages/addWordPage.dart';
+import 'package:vocabb/providers/addWordProvider.dart';
+import 'package:vocabb/services/apiServices.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
+import 'package:vocabb/widgets/newWordWidget.dart';
 import 'package:vocabb/widgets/poolNameWidget.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
 import 'package:vocabb/widgets/wordListWidget.dart';
@@ -12,19 +19,31 @@ class PoolPage extends StatelessWidget {
   final String userName;
   final int rating;
 
-  const PoolPage({
+  final TextEditingController _newWordController = TextEditingController();
+
+  final Dio dio = Dio();
+
+  PoolPage({
     super.key,
     required this.title,
     required this.userName,
     required this.rating
   });
 
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    AddWordProvider addWordProvider = Provider.of<AddWordProvider>(context);
     return Scaffold(
-      appBar: const PreferredSize(
+      appBar: PreferredSize(
         preferredSize: Size.fromHeight(30),
-        child: AppBarWidget(leadingIcon: Icons.chevron_left,),
+        child: AppBarWidget(
+          leadingIcon: Icons.chevron_left,
+          action: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -43,10 +62,10 @@ class PoolPage extends StatelessWidget {
                     children: [
                       PoolNameWidget(poolName: title),
                       IconButton(
-                        onPressed: () {
-                          print("Pool settings pressed");
-                        },
-                        icon: Icon(Icons.settings, color: Theme.of(context).scaffoldBackgroundColor)
+                          onPressed: () {
+                            print("Pool settings pressed");
+                          },
+                          icon: Icon(Icons.settings, color: Theme.of(context).scaffoldBackgroundColor)
                       )
                     ],
                   ),
@@ -95,24 +114,47 @@ class PoolPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 10,),
-
+            const SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Words", style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold
                   ),),
-                  WordListWidget(words: Consts.poolWords1)
+                  Consts.poolWords1.isEmpty
+                    ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                            "Add a word to this pool by clicking on the plus icon on the bottom right corner of the screen",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                              fontSize: 15,
+                            ),
+                            textAlign: TextAlign.center
+                        ),
+                      ),
+                    )
+                    : WordListWidget(words: Consts.poolWords1)
                 ],
-              ),
+              )
             )
           ],
         ),
+      ),
+      floatingActionButton:  FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddWordPage()));
+        },
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18)
+        ),
+        child: const Icon(Icons.add),
       )
     );
   }

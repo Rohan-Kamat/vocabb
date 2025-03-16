@@ -15,4 +15,6 @@ class Consts {
     "Concoct",
     "Precocious"
   ];
+
+  static final List<String> poolWords2 = <String>[];
 }

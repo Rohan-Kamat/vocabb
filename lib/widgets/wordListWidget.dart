@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vocabb/widgets/meaningDisplayWidget.dart';
 
 import '../consts/consts.dart';
 
@@ -63,45 +64,14 @@ class _WordListWidgetState extends State<WordListWidget> {
                 SizedBox(height: _isSelected[index] ? 5 : 0,),
                 Visibility(
                   visible: _isSelected[index],
-                  child: Card(
-                    elevation: 4,
-                    child: Container(
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.tertiary.withOpacity(0.5),
-                          width: 0.5
-                        ),
-                        borderRadius: BorderRadius.circular(4)
-                      ),
-                      width: size.width,
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("verb", style: TextStyle(
-                            fontSize: 17,
-                            fontStyle: FontStyle.italic
-                          ),),
-                          SizedBox(height: 15,),
-                          Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis molestie neque nec eros fringilla aliquam. Nulla libero sapien, molestie eu.", style: TextStyle(
-                            fontSize: 13.5
-                          ),),
-                          SizedBox(height: 10),
-                          Text("Example", style: TextStyle(
-                              fontSize: 17,
-                              fontStyle: FontStyle.italic
-                          ),),
-                          SizedBox(height: 15,),
-                          Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ullamcorper.", style: TextStyle(
-                            fontSize: 13.5
-                          ),)
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: const MeaningDisplayWidget(
+                    selectable: false,
+                    hasViewAllButton: true,
+                    partOfSpeech: "verb",
+                    definition: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis molestie neque nec eros fringilla aliquam. Nulla libero sapien, molestie eu.",
+                    example: "Lorem ipsum dolor sit amet, consectetur adipiscing. Suspendisse ullamcorper."
+                  )
                 )
-
               ],
             ),
           );
