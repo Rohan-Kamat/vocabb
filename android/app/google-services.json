@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "195609827419",
+    "project_id": "vocabb-e2cff",
+    "storage_bucket": "vocabb-e2cff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195609827419:android:1ccce7e0fe2864a218477e",
+        "android_client_info": {
+          "package_name": "com.example.vocabb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqglmPgKJ4ArexXfyUMUE29jagMip5G-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

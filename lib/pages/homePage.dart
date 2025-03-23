@@ -4,6 +4,7 @@ import 'package:vocabb/widgets/searchBarWidget.dart';
 import 'package:vocabb/widgets/testTabWidget.dart';
 
 class HomePage extends StatefulWidget {
+
   const HomePage({super.key});
 
   @override
@@ -128,7 +129,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   ],
                 )
             )
-
           ],
         )
       ],

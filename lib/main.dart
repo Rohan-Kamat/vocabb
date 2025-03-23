@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vocabb/pages/homePage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:vocabb/pages/mainPage.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
 import 'package:vocabb/providers/loadingProvider.dart';
 import 'package:vocabb/providers/wordMeaningsProvider.dart';
 import 'package:vocabb/theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
       MultiProvider(
           providers: [

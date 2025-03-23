@@ -74,8 +74,10 @@ class _PoolNameWidgetState extends State<PoolNameWidget> {
                 ),
               ),
           )
-          : SizedBox(
-            width: size.width*0.6,
+          : ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: size.width*0.6
+            ),
             child: Text(_title, style: TextStyle(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   fontWeight: FontWeight.bold,

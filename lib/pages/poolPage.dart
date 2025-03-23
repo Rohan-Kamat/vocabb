@@ -6,6 +6,7 @@ import 'package:vocabb/pages/addWordPage.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
 import 'package:vocabb/services/apiServices.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
+import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
 import 'package:vocabb/widgets/newWordWidget.dart';
 import 'package:vocabb/widgets/poolNameWidget.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
@@ -76,7 +77,16 @@ class PoolPage extends StatelessWidget {
                   )),
                   SizedBox(height: 8),
                   RatingWidget(rating: rating, size: 16),
-                  SizedBox(height: 57),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 60,
+                    child: Center(
+                      child: Text("Desciption", style: TextStyle(
+                        color: Theme.of(context).scaffoldBackgroundColor
+                      ),),
+                    ),
+                  ),
+                  SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -146,15 +156,10 @@ class PoolPage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton:  FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddWordPage()));
-        },
-        backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18)
-        ),
-        child: const Icon(Icons.add),
+      floatingActionButton: FloatingActionButtonWidget(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddWordPage()));
+          }
       )
     );
   }

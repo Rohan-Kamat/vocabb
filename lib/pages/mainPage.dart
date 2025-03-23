@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:vocabb/pages/createPoolPage.dart';
 import 'package:vocabb/pages/explorePage.dart';
 import 'package:vocabb/pages/homePage.dart';
 import 'package:vocabb/pages/poolPage.dart';
+import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
 
 import '../widgets/appBarWidget.dart';
 
@@ -34,7 +36,64 @@ class _MainPageState extends State<MainPage> {
     const ExplorePage()
   ];
 
-
+  void _createItemDialog(BuildContext context, Size size) {
+    print(context.widget);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Container(
+            height: size.height*0.6,
+            width: size.width*0.8,
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        print("create pool");
+                        Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePoolPage()));
+                      },
+                      child: Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Create A Pool", style: TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.secondary.withOpacity(0.7)
+                              )),
+                              SizedBox(height: 8,),
+                              Text(
+                                "A pool is a collection of words. You can add words to a pool as and when you like. You can learn the words in a pool using our effective learning method",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.7)
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+            ),
+          ),
+        );
+      }
+    );
+  }
 
   Widget _buildNavBarItem(int index) {
     return InkWell(
@@ -89,6 +148,14 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
       ),
+      floatingActionButton: _selectedPage == 0
+        ? FloatingActionButtonWidget(
+          onPressed: () {
+            _createItemDialog(context, size);
+          }
+      )
+        : const SizedBox.shrink()
+
     );
   }
 }
