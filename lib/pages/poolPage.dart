@@ -1,6 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/pages/addWordPage.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
@@ -16,29 +16,23 @@ import '../consts/consts.dart';
 
 class PoolPage extends StatelessWidget {
 
-  final String title;
-  final String userName;
-  final int rating;
+  final String id;
+  final PoolModel poolModel;
 
   final TextEditingController _newWordController = TextEditingController();
 
-  final Dio dio = Dio();
-
   PoolPage({
     super.key,
-    required this.title,
-    required this.userName,
-    required this.rating
+    required this.id,
+    required this.poolModel
   });
 
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    AddWordProvider addWordProvider = Provider.of<AddWordProvider>(context);
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(30),
+        preferredSize: const Size.fromHeight(30),
         child: AppBarWidget(
           leadingIcon: Icons.chevron_left,
           action: () {
@@ -50,10 +44,10 @@ class PoolPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 28),
+            const SizedBox(height: 28),
             Container(
               color: Theme.of(context).colorScheme.secondary,
-              padding: EdgeInsets.only(top: 20, bottom: 20, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 20, bottom: 20, left: 10, right: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -61,7 +55,7 @@ class PoolPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PoolNameWidget(poolName: title),
+                      PoolNameWidget(poolName: poolModel.name),
                       IconButton(
                           onPressed: () {
                             print("Pool settings pressed");
@@ -70,13 +64,13 @@ class PoolPage extends StatelessWidget {
                       )
                     ],
                   ),
-                  SizedBox(height: 4,),
-                  Text(userName, style: TextStyle(
+                  const SizedBox(height: 4,),
+                  Text(poolModel.user, style: TextStyle(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       fontSize: 16
                   )),
-                  SizedBox(height: 8),
-                  RatingWidget(rating: rating, size: 16),
+                  const SizedBox(height: 8),
+                  RatingWidget(rating: poolModel.rating, size: 16),
                   const SizedBox(height: 10),
                   SizedBox(
                     height: 60,

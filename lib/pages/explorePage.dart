@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/widgets/poolTabWidget.dart';
 import 'package:vocabb/widgets/searchBarWidget.dart';
 import 'package:vocabb/widgets/testTabWidget.dart';
@@ -126,12 +127,19 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                         itemCount: 5),
                     ListView.separated(
                         itemBuilder: (context, index) {
-                          return const PoolTabWidget(
-                              title: "Name",
-                              userName: "username",
-                              rating: 3,
-                              totalWords: 50,
-                              masteredWords: 40
+                          return PoolTabWidget(
+                              id: "DefaultId",
+                              poolModel: PoolModel(
+                                name: "Name",
+                                user: "Default",
+                                rating: 3,
+                                words: [],
+                                totalWordsCount: 50,
+                                masteredWordsCount: 30,
+                                learningWordsCount: 2,
+                                reviewingWordsCount: 15,
+                                unvisitedWordsCount: 3
+                              ),
                           );
                         },
                         separatorBuilder: (context, index) {

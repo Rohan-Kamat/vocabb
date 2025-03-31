@@ -6,13 +6,12 @@ class DbServices {
   static final db = FirebaseFirestore.instance;
   static const POOLS_COLLECTION_NAME = "pools";
 
-  static Future<bool> createPool(PoolModel poolModel) async {
+  static Future<String?> createPool(PoolModel poolModel) async {
     try {
-      await db.collection(POOLS_COLLECTION_NAME).add(poolModel.toJson());
-      return true;
+      var document = await db.collection(POOLS_COLLECTION_NAME).add(poolModel.toJson());
+      return document.id;
     } catch(e) {
       print("Error while adding pool to database");
-      return false;
     }
   }
 

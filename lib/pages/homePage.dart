@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vocabb/models/poolModel.dart';
-import 'package:vocabb/providers/poolsProvider.dart';
+import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/poolTabWidget.dart';
 import 'package:vocabb/widgets/searchBarWidget.dart';
 import 'package:vocabb/widgets/testTabWidget.dart';
@@ -16,6 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final Stream<QuerySnapshot> _poolStream =
+    DbServices.db.collection(DbServices.POOLS_COLLECTION_NAME).snapshots();
 
 
   @override
@@ -33,10 +36,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    PoolsProvider poolsProvider = Provider.of<PoolsProvider>(context);
-    if (!poolsProvider.hasFetched) {
-      poolsProvider.fetchPools();
-    }
     return Column(
       children: [
         SizedBox(height: size.height*0.054,),
@@ -73,60 +72,42 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    Consumer<PoolsProvider>(
-                      builder: (context, provider, _) {
-                        return provider.isUpdating
-                          ? CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.secondary
-                          )
-                          : !provider.hasFetched
-                            ? Column(
-                              children: [
-                                Text("Something went wrong. Make sure your internet connection is stable and try again", style: TextStyle(
-                                  color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
-                                  fontSize: 15
-                                ), textAlign: TextAlign.center,),
-                                OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Theme.of(context).primaryColor,
-                                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(3),
-                                      side: BorderSide(
-                                        color: Theme.of(context).primaryColor
-                                      )
-                                    )
-                                  ),
-                                  onPressed: () {
-                                    provider.fetchPools();
-                                  },
-                                  child: const Text("Retry"))
-                              ],
-                            )
-                            : provider.getAllPools!.isEmpty
-                              ? Text("No pools available. Create a pool by clicking on the plus icon on the bottom right corner", style: TextStyle(
-                                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
-                                fontSize: 15,
-                              ), textAlign: TextAlign.center,)
-                              : ListView.separated(
-                                  itemBuilder: (context, index) {
-                                    PoolModel pool = provider.getAllPools![index];
-                                    return PoolTabWidget(
-                                        title: pool.name,
-                                        userName: pool.user,
-                                        rating: pool.rating,
-                                        totalWords: 50,
-                                        masteredWords: 20
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return const SizedBox(
-                                      height: 12,
-                                    );
-                                  },
-                                  itemCount: provider.getAllPools!.length
-                              );
-                      },
+                    StreamBuilder<QuerySnapshot>(
+                      stream: _poolStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("Something went wrong. Make sure your internet connection is stable and try again", style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                              fontSize: 15
+                          ), textAlign: TextAlign.center,);
+                        } else if (snapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.secondary
+                          );
+                        }
+
+                        var poolsList = snapshot.data!.docs;
+                        return poolsList.isEmpty
+                          ? Text("No pools available. Create a pool by clicking on the plus icon on the bottom right corner", style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                            fontSize: 15,
+                          ), textAlign: TextAlign.center,)
+                          : ListView.separated(
+                              itemBuilder: (context, index) {
+                                return  PoolTabWidget(
+                                    id: poolsList[index].id,
+                                    poolModel:  PoolModel.fromJson(
+                                        poolsList[index].data() as Map<String, dynamic>)
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  height: 12,
+                                );
+                              },
+                              itemCount: poolsList.length
+                          );
+                      }
                     ),
                     ListView.separated(
                         itemBuilder: (context, index) {
@@ -148,12 +129,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         itemCount: 5),
                     ListView.separated(
                         itemBuilder: (context, index) {
-                          return const PoolTabWidget(
-                              title: "Name",
-                              userName: "username",
-                              rating: 3,
-                              totalWords: 50,
-                              masteredWords: 40
+                          return  PoolTabWidget(
+                            id: "DefaultId",
+                            poolModel: PoolModel(
+                                name: "Name",
+                                user: "Default",
+                                rating: 3,
+                                words: [],
+                                totalWordsCount: 50,
+                                masteredWordsCount: 30,
+                                learningWordsCount: 2,
+                                reviewingWordsCount: 15,
+                                unvisitedWordsCount: 3
+                            ),
                           );
                         },
                         separatorBuilder: (context, index) {

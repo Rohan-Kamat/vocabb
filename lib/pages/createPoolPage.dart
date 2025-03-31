@@ -4,7 +4,6 @@ import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/pages/poolPage.dart';
 import 'package:vocabb/providers/loadingProvider.dart';
-import 'package:vocabb/providers/poolsProvider.dart';
 import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
 
@@ -30,12 +29,19 @@ class CreatePoolPage extends StatelessWidget {
           user: "Default",
           description: _descriptionController.text,
           rating: 0,
-          words: <WordModel>[]
+          words: <WordModel>[],
+          totalWordsCount: 0,
+          masteredWordsCount: 0,
+          reviewingWordsCount: 0,
+          learningWordsCount: 0,
+          unvisitedWordsCount: 0
       );
 
-      PoolsProvider poolsProvider = Provider.of<PoolsProvider>(context, listen: false);
-      bool response = await poolsProvider.addPool(poolModel);
-      if (response) {
+      LoadingProvider loadingProvider = Provider.of<LoadingProvider>(context, listen: false);
+      loadingProvider.setLoading(true);
+      String? poolId = await DbServices.createPool(poolModel);
+      loadingProvider.setLoading(false);
+      if (poolId != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text("Pool created", style: TextStyle(
@@ -46,9 +52,9 @@ class CreatePoolPage extends StatelessWidget {
         );
         Navigator.pop(context);
         Navigator.push(context, MaterialPageRoute(builder: (context) => PoolPage(
-            title: poolModel.name,
-            userName: poolModel.user,
-            rating: poolModel.rating)));
+          id: poolId,
+          poolModel: poolModel,
+        )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -131,9 +137,9 @@ class CreatePoolPage extends StatelessWidget {
                     print("Creating pool");
                     _createPool(context);
                   },
-                  child: Consumer<PoolsProvider>(
+                  child: Consumer<LoadingProvider>(
                     builder: (context, provider, _) {
-                      return provider.isUpdating
+                      return provider.isLoading
                         ? CircularProgressIndicator(
                             color: Colors.white,
                             backgroundColor: Theme
