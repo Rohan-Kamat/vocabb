@@ -140,7 +140,7 @@ class PoolPage extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
                         child: Text(
-                            "Add a word to this pool by clicking on the plus icon on the bottom right corner of the screen",
+                            "Add a word by clicking on the plus icon on the bottom right corner",
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
                               fontSize: 15,

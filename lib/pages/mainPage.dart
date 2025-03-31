@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vocabb/pages/createPoolPage.dart';
 import 'package:vocabb/pages/explorePage.dart';
 import 'package:vocabb/pages/homePage.dart';
 import 'package:vocabb/pages/poolPage.dart';
+import 'package:vocabb/providers/poolsProvider.dart';
 import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
 
 import '../widgets/appBarWidget.dart';
@@ -125,6 +127,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
+    PoolsProvider poolsProvider = Provider.of<PoolsProvider>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(30),
@@ -148,12 +151,12 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
       ),
-      floatingActionButton: _selectedPage == 0
+      floatingActionButton: _selectedPage == 0 && poolsProvider.hasFetched
         ? FloatingActionButtonWidget(
           onPressed: () {
             _createItemDialog(context, size);
           }
-      )
+        )
         : const SizedBox.shrink()
 
     );

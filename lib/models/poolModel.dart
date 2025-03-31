@@ -15,14 +15,25 @@ class PoolModel {
     required this.words
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       "name": name,
       "user": user,
       "description": description ?? "",
       "rating": rating,
-      "words": words
+      "words": words.map((word) => word.toJson()).toList()
     };
+  }
+
+  static PoolModel fromJson(Map<String, dynamic> data) {
+    return PoolModel(
+        name: data["name"],
+        user: data["user"],
+        description: data.containsKey("description") ? data["description"] : null,
+        rating: data["rating"],
+        words: List<WordModel>.from(data["words"].map(
+                (word) => WordModel.fromJson(word)).toList())
+    );
   }
 
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vocabb/models/poolModel.dart';
+import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/pages/poolPage.dart';
 import 'package:vocabb/providers/loadingProvider.dart';
+import 'package:vocabb/providers/poolsProvider.dart';
 import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
 
@@ -26,15 +28,14 @@ class CreatePoolPage extends StatelessWidget {
       PoolModel poolModel = PoolModel(
           name: _poolNameController.text,
           user: "Default",
+          description: _descriptionController.text,
           rating: 0,
-          words: []
+          words: <WordModel>[]
       );
 
-      LoadingProvider loadingProvider = Provider.of<LoadingProvider>(context, listen: false);
-      loadingProvider.setLoading(true);
-      bool response = await DbServices.createPool(poolModel);
-      loadingProvider.setLoading(false);
-      if (response == true) {
+      PoolsProvider poolsProvider = Provider.of<PoolsProvider>(context, listen: false);
+      bool response = await poolsProvider.addPool(poolModel);
+      if (response) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text("Pool created", style: TextStyle(
@@ -43,6 +44,7 @@ class CreatePoolPage extends StatelessWidget {
             backgroundColor: Colors.green,
           )
         );
+        Navigator.pop(context);
         Navigator.push(context, MaterialPageRoute(builder: (context) => PoolPage(
             title: poolModel.name,
             userName: poolModel.user,
@@ -129,9 +131,9 @@ class CreatePoolPage extends StatelessWidget {
                     print("Creating pool");
                     _createPool(context);
                   },
-                  child: Consumer<LoadingProvider>(
+                  child: Consumer<PoolsProvider>(
                     builder: (context, provider, _) {
-                      return provider.isLoading
+                      return provider.isUpdating
                         ? CircularProgressIndicator(
                             color: Colors.white,
                             backgroundColor: Theme

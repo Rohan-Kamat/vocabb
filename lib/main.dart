@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:vocabb/providers/poolsProvider.dart';
 import 'firebase_options.dart';
 import 'package:vocabb/pages/mainPage.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
@@ -18,7 +19,8 @@ void main() async {
           providers: [
             ChangeNotifierProvider(create: (context) => AddWordProvider()),
             ChangeNotifierProvider(create: (context) => LoadingProvider()),
-            ChangeNotifierProvider(create: (context) => WordMeaningsProvider())
+            ChangeNotifierProvider(create: (context) => WordMeaningsProvider()),
+            ChangeNotifierProvider(create: (context) => PoolsProvider())
           ],
           child: MyApp()
       )

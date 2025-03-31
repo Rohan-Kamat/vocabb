@@ -12,24 +12,32 @@ class WordModel{
   });
 
   Map<String, dynamic> toJson() {
-    HashMap<String, dynamic> wordMeaningsInJson = HashMap();
     HashMap<String, dynamic> meaningsInJson = HashMap();
 
-
     for (String partOfSpeech in meanings.keys) {
-      meaningsInJson.putIfAbsent(partOfSpeech, () => []);
-      for (var meaning in meanings[partOfSpeech]!) {
-        HashMap<String, String> definitionsInJson = HashMap();
-        definitionsInJson.putIfAbsent("defintition", () => meaning.definition);
-        if (meaning.example != null) {
-          definitionsInJson.putIfAbsent("example", () => meaning.example!);
-        }
-        meaningsInJson[partOfSpeech].add(definitionsInJson);
-      }
+      meaningsInJson.putIfAbsent(partOfSpeech, () => meanings[partOfSpeech]!
+          .map((definitionModel) => definitionModel.toJson()).toList());
     }
 
-    wordMeaningsInJson.putIfAbsent(word, () => meaningsInJson);
-    return wordMeaningsInJson;
+    return {
+      "word": word,
+      "meanings": meaningsInJson
+    };
+  }
+
+  static WordModel fromJson(Map<String, dynamic> data) {
+    Map<String, dynamic> meaningsInJson = data["meanings"];
+    Map<String, List<DefinitionModel>> meaningsFromJson = HashMap();
+
+    for (String partOfSpeech in meaningsInJson.keys) {
+      meaningsFromJson.putIfAbsent(partOfSpeech, () => meaningsInJson[partOfSpeech]
+          .map((definition) => DefinitionModel.fromJson(definition)).toList());
+    }
+
+    return WordModel(
+        word: data["word"],
+        meanings: meaningsFromJson
+    );
   }
 
 }
