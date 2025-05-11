@@ -48,6 +48,17 @@ class NewWordWidget extends StatelessWidget {
                           onPressed: loadingProvider.isLoading
                             ? null
                             : () async {
+                                if (_newWordController.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text("Word cannot be blank", style: TextStyle(
+                                              color: Colors.white
+                                          )),
+                                          backgroundColor: Colors.red
+                                      )
+                                  );
+                                  return;
+                                }
                                 loadingProvider.setLoading(true);
                                 FocusScope.of(context).unfocus();
                                 WordModel? wordMeanings = await ApiServices.getWordMeanings(_newWordController.text);
