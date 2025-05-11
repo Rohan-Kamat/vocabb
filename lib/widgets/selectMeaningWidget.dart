@@ -66,6 +66,7 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
                   onPressed: () {
                     WordModel finalSelection = wordMeaningsProvider.getSelectedMeanings();
                     print(finalSelection.toJson());
+                    addWordProvider.setNewWordState(NewWordState.addingWord);
                     Navigator.pop(context);
                   },
                   child: const Text("Add"),
