@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vocabb/models/poolModel.dart';
-import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/pages/addWordPage.dart';
-import 'package:vocabb/providers/addWordProvider.dart';
-import 'package:vocabb/services/apiServices.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
 import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
-import 'package:vocabb/widgets/newWordWidget.dart';
 import 'package:vocabb/widgets/poolNameWidget.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
 import 'package:vocabb/widgets/wordListWidget.dart';
@@ -18,8 +13,6 @@ class PoolPage extends StatelessWidget {
 
   final String id;
   final PoolModel poolModel;
-
-  final TextEditingController _newWordController = TextEditingController();
 
   PoolPage({
     super.key,
