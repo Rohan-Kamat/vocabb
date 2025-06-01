@@ -45,6 +45,8 @@ class NewWordWidget extends StatelessWidget {
                   child: Consumer<LoadingProvider>(
                     builder: (context, provider, _) {
                       return OutlinedButton(
+                          // Do not do anything if button is clicked
+                          // when the word is being fetched from API
                           onPressed: loadingProvider.isLoading
                             ? null
                             : () async {
@@ -83,7 +85,6 @@ class NewWordWidget extends StatelessWidget {
                           ),
                           child: provider.isLoading
                               ? SizedBox(
-                                height: 20,
                                 child: CircularProgressIndicator(
                                   color: Colors.white,
                                   backgroundColor: Theme

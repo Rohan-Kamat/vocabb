@@ -19,7 +19,7 @@ class DbServices {
     try {
       List<PoolModel> pools = [];
       print("Fetching pools");
-      await db.collection(POOLS_COLLECTION_NAME).get().then(
+      db.collection(POOLS_COLLECTION_NAME).get().then(
         (querySnapshot) {
           for (var pool in querySnapshot.docs) {
             pools.add(PoolModel.fromJson(pool.data()));
@@ -32,5 +32,55 @@ class DbServices {
     } catch(e) {
       print("Exception occured on trying to fetch all pools: $e");
     }
+  }
+  
+  static Future<bool> addWordToPoolByPoolName(String poolName, WordModel word) async {
+    try {
+      print("Adding word ${word.word} to pool $poolName");
+      final querySnapshot = await db.collection(POOLS_COLLECTION_NAME)
+          .where("name", isEqualTo: poolName).get();
+      if (querySnapshot.docs.isEmpty) {
+        print("No pool with name $poolName found");
+        return false;
+      } else {
+        final doc = querySnapshot.docs.first.reference;
+        await doc.update({
+          "words": FieldValue.arrayUnion([word.toJson()])
+        });
+        print("Updated pool with new word");
+        return true;
+      }
+    } catch(e) {
+      print("Error trying to add a new word ${word.word} to pool $poolName: $e");
+      return false;
+    }
+  }
+
+  static Future<PoolModel?> getPoolByName(String poolName) async {
+    try {
+      print("Fetching pool details for pool $poolName");
+      final querySnapshot = await db.collection(POOLS_COLLECTION_NAME)
+          .where("name", isEqualTo: poolName).get();
+      if (querySnapshot.docs.isEmpty) {
+        print("No pool found with name $poolName");
+      } else {
+        final poolInJson = querySnapshot.docs.first.data();
+        if (poolInJson.isNotEmpty) {
+          return PoolModel.fromJson(poolInJson);
+        } else {
+          print("Doc not found for pool $poolName");
+        }
+      }
+    } catch (e) {
+      print("Error trying to fetch pool $poolName: $e");
+    }
+  }
+
+  static Stream<DocumentSnapshot> getWordStreamByPoolName(String poolName) {
+    return db.collection(POOLS_COLLECTION_NAME)
+             .where("name", isEqualTo: poolName)
+             .limit(1)
+             .snapshots()
+             .map((snapshot) => snapshot.docs.first);
   }
 }

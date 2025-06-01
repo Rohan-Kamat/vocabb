@@ -136,7 +136,7 @@ class PoolPage extends StatelessWidget {
                         ),
                       ),
                     )
-                    : WordListWidget(words: Consts.poolWords1)
+                    : WordListWidget(poolModel: poolModel)
                 ],
               )
             )
@@ -145,7 +145,9 @@ class PoolPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButtonWidget(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AddWordPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddWordPage(
+              poolName: poolModel.name
+            )));
           }
       )
     );

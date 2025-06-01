@@ -3,10 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
 import 'package:vocabb/providers/wordMeaningsProvider.dart';
+import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/meaningDisplayWidget.dart';
 
 class SelectMeaningWidget extends StatefulWidget {
-  const SelectMeaningWidget({super.key});
+  const SelectMeaningWidget({
+    super.key,
+    required this.poolName
+  });
+
+  final String poolName;
 
   @override
   State<SelectMeaningWidget> createState() => _SelectMeaningWidgetState();
@@ -66,6 +72,7 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
                   onPressed: () {
                     WordModel finalSelection = wordMeaningsProvider.getSelectedMeanings();
                     print(finalSelection.toJson());
+                    DbServices.addWordToPoolByPoolName(widget.poolName, finalSelection);
                     addWordProvider.setNewWordState(NewWordState.addingWord);
                     Navigator.pop(context);
                   },

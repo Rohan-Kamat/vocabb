@@ -7,7 +7,12 @@ import 'package:vocabb/widgets/newWordWidget.dart';
 import 'package:vocabb/widgets/selectMeaningWidget.dart';
 
 class AddWordPage extends StatelessWidget {
-  const AddWordPage({super.key});
+  const AddWordPage({
+    super.key,
+    required this.poolName
+  });
+
+  final String poolName;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class AddWordPage extends StatelessWidget {
             const SizedBox(height: 20,),
             addWordProvider.getNewWordState == NewWordState.addingWord
               ? NewWordWidget()
-              : SelectMeaningWidget()
+              : SelectMeaningWidget(poolName: poolName)
           ]
         ),
       ),

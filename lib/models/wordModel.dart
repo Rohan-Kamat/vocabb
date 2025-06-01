@@ -31,7 +31,8 @@ class WordModel{
 
     for (String partOfSpeech in meaningsInJson.keys) {
       meaningsFromJson.putIfAbsent(partOfSpeech, () => meaningsInJson[partOfSpeech]
-          .map((definition) => DefinitionModel.fromJson(definition)).toList());
+          .map<DefinitionModel>((definition) =>
+            DefinitionModel.fromJson(definition)).toList());
     }
 
     return WordModel(

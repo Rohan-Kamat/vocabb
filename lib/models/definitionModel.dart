@@ -14,7 +14,7 @@ class DefinitionModel {
     };
   }
 
-  static DefinitionModel fromJson(Map<String, String> data) {
+  static DefinitionModel fromJson(Map<String, dynamic> data) {
     return DefinitionModel(
       definition: data["definition"]!,
       example: data.containsKey("example") ? data["example"] : null
