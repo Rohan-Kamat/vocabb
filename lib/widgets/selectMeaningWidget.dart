@@ -40,10 +40,9 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
     AddWordProvider addWordProvider = Provider.of<AddWordProvider>(context);
     WordMeaningsProvider wordMeaningsProvider = Provider.of<WordMeaningsProvider>(context);
     WordModel wordMeanings = wordMeaningsProvider.getWord!;
-    List<Text> partsOfSpeech = [];
-    for (String partOfSpeech in wordMeanings.meanings.keys) {
-      partsOfSpeech.add(Text(partOfSpeech));
-    }
+    List<Text> partsOfSpeech = wordMeanings.meanings.keys
+                              .map((partOfSpeech) => Text(partOfSpeech))
+                              .toList();
     Size size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

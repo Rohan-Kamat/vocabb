@@ -82,7 +82,6 @@ class _WordListWidgetState extends State<WordListWidget> {
                   children: [
                     InkWell(
                       onTap: () {
-                        print("Word pressed $index");
                         setState(() {
                           if (_previousIndex != index) {
                             _isSelected[_previousIndex] = false;
@@ -103,6 +102,7 @@ class _WordListWidgetState extends State<WordListWidget> {
                     Visibility(
                         visible: _isSelected[index],
                         child: MeaningDisplayWidget(
+                            wordModel: words[index],
                             selectable: false,
                             hasViewAllButton: true,
                             partOfSpeech: firstPartOfSpeech,

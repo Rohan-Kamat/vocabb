@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vocabb/models/wordModel.dart';
+import 'package:vocabb/pages/viewAllMeaningsPage.dart';
 import 'package:vocabb/providers/wordMeaningsProvider.dart';
 
 class MeaningDisplayWidget extends StatelessWidget {
   const MeaningDisplayWidget({
     super.key,
+    this.wordModel,
     required this.partOfSpeech,
     required this.definition,
     this.example,
@@ -13,6 +16,7 @@ class MeaningDisplayWidget extends StatelessWidget {
     this.index
   });
 
+  final WordModel? wordModel;
   final String partOfSpeech;
   final String definition;
   final int? index;
@@ -64,7 +68,11 @@ class MeaningDisplayWidget extends StatelessWidget {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: () {
-                      print("View all");
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => ViewAllMeaningsPage(
+                              wordModel: wordModel!
+                          )
+                      ));
                     },
                     child: Text("View All", style: TextStyle(
                         color: Theme.of(context).primaryColor,
