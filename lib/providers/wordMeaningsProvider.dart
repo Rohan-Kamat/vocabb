@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/definitionModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 
@@ -25,7 +26,12 @@ class WordMeaningsProvider with ChangeNotifier {
         }
       }
     }
-    return WordModel(word: word!.word, meanings: meanings);
+    return WordModel(
+      word: word!.word,
+      meanings: meanings,
+      learningStatus: LearningStatus.unknown,
+      reviewCount: 0
+    );
   }
 
   void setWord(WordModel word) {

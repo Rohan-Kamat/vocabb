@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/definitionModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 
@@ -31,7 +32,12 @@ class ApiServices {
           }
         }
       }
-      WordModel wordMeanings = WordModel(word: word, meanings: meanings);
+      WordModel wordMeanings = WordModel(
+          word: word,
+          meanings: meanings,
+          learningStatus: LearningStatus.unknown,
+          reviewCount: 0
+      );
       return wordMeanings;
     } catch(e) {
       print("Error while calling dictionary API.");

@@ -1,14 +1,18 @@
 import 'dart:collection';
-
+import 'package:vocabb/consts/enums.dart';
 import 'definitionModel.dart';
 
 class WordModel{
   final String word;
   final Map<String, List<DefinitionModel>> meanings;
+  LearningStatus learningStatus;
+  int reviewCount;
 
   WordModel({
     required this.word,
-    required this.meanings
+    required this.meanings,
+    required this.learningStatus,
+    required this.reviewCount
   });
 
   Map<String, dynamic> toJson() {
@@ -21,7 +25,9 @@ class WordModel{
 
     return {
       "word": word,
-      "meanings": meaningsInJson
+      "learningStatus": learningStatus.displayText,
+      "meanings": meaningsInJson,
+      "reviewCount": reviewCount
     };
   }
 
@@ -35,9 +41,30 @@ class WordModel{
             DefinitionModel.fromJson(definition)).toList());
     }
 
+    LearningStatus learningStatus;
+    switch(data["learningStatus"]) {
+      case "NEW WORD":
+        learningStatus = LearningStatus.unknown;
+        break;
+      case "LEARNING":
+        learningStatus = LearningStatus.learning;
+        break;
+      case "REVIEWING":
+        learningStatus = LearningStatus.reviewing;
+        break;
+      case "MASTERED":
+        learningStatus = LearningStatus.mastered;
+        break;
+      default:
+        learningStatus = LearningStatus.unknown;
+        break;
+    }
+
     return WordModel(
         word: data["word"],
-        meanings: meaningsFromJson
+        meanings: meaningsFromJson,
+        learningStatus: learningStatus,
+        reviewCount: data["reviewCount"]
     );
   }
 

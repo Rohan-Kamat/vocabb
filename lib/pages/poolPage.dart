@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/pages/addWordPage.dart';
+import 'package:vocabb/pages/learnPoolPage.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
 import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
 import 'package:vocabb/widgets/poolNameWidget.dart';
@@ -77,13 +78,13 @@ class PoolPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-
                       SizedBox(
                         height: 38,
                         width: 176,
                         child: OutlinedButton(
                             onPressed: () {
-                              print("Learn pool");
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => LearnPoolPage(poolModel: poolModel)));
                             },
                             style: OutlinedButton.styleFrom(
                               backgroundColor: Theme.of(context).primaryColor,
@@ -122,7 +123,7 @@ class PoolPage extends StatelessWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.bold
                   ),),
-                  Consts.poolWords1.isEmpty
+                  poolModel.words.isEmpty
                     ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(

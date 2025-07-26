@@ -1,4 +1,5 @@
 import 'package:vocabb/models/wordModel.dart';
+import 'package:vocabb/services/dbServices.dart';
 
 class PoolModel {
   String name;
@@ -55,5 +56,14 @@ class PoolModel {
         unvisitedWordsCount: data["unvisitedWordsCount"]
     );
   }
+
+  void update(List<WordModel> words, int unvisitedWordsCount, int learningWordsCount, int reviewingWordsCount, int masteredWordsCount) {
+    this.words = words;
+    this.unvisitedWordsCount = unvisitedWordsCount;
+    this.learningWordsCount = learningWordsCount;
+    this.reviewingWordsCount = reviewingWordsCount;
+    this.masteredWordsCount = masteredWordsCount;
+  }
+
 
 }

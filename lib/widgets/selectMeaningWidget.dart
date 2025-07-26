@@ -73,6 +73,7 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
                     print(finalSelection.toJson());
                     DbServices.addWordToPoolByPoolName(widget.poolName, finalSelection);
                     addWordProvider.setNewWordState(NewWordState.addingWord);
+                    wordMeaningsProvider.resetState();
                     Navigator.pop(context);
                   },
                   child: const Text("Add"),

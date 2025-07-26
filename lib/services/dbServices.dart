@@ -45,7 +45,8 @@ class DbServices {
       } else {
         final doc = querySnapshot.docs.first.reference;
         await doc.update({
-          "words": FieldValue.arrayUnion([word.toJson()])
+          "words": FieldValue.arrayUnion([word.toJson()]),
+          "total"
         });
         print("Updated pool with new word");
         return true;
@@ -82,5 +83,22 @@ class DbServices {
              .limit(1)
              .snapshots()
              .map((snapshot) => snapshot.docs.first);
+  }
+
+  static Future<bool> updatePool(PoolModel poolModel) async {
+    try {
+      final querySnapshot = await db.collection(POOLS_COLLECTION_NAME)
+          .where("name", isEqualTo: poolModel.name).get();
+      if (querySnapshot.docs.isEmpty) {
+        print("No pool found with name ${poolModel.name}");
+        return false;
+      } else {
+        await querySnapshot.docs.first.reference.set(poolModel.toJson());
+        return true;
+      }
+    } catch (e) {
+      print("Error updating pool ${poolModel.name}: $e");
+      return false;
+    }
   }
 }

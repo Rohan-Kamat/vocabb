@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -81,12 +82,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                               fontSize: 15
                           ), textAlign: TextAlign.center,);
                         } else if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator(
-                              color: Theme.of(context).colorScheme.secondary
+                          return Center(
+                            child: SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.secondary
+                              ),
+                            ),
                           );
+                        } else if (snapshot.data == null) {
+                          return Text("Something went wrong. Make sure your internet connection is stable and try again", style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                              fontSize: 15
+                          ), textAlign: TextAlign.center,);
                         }
-
                         var poolsList = snapshot.data!.docs;
+                        print(poolsList);
                         return poolsList.isEmpty
                           ? Text("No pools available. Create a pool by clicking on the plus icon on the bottom right corner", style: TextStyle(
                             color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),

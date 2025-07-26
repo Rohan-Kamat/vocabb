@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocabb/models/poolModel.dart';
+import 'package:vocabb/widgets/progressBarWidget.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
 
 import '../pages/poolPage.dart';
@@ -69,36 +70,14 @@ class PoolTabWidget extends StatelessWidget {
                 fontSize: 11
               ),),
               SizedBox(height: 5),
-              Container(
-                height: 14,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7),
-                  color: Theme.of(context).scaffoldBackgroundColor
-                ),
-                child: poolModel.masteredWordsCount > 0
-                ? FractionallySizedBox(
-                  heightFactor: 1,
-                  widthFactor: poolModel.masteredWordsCount/poolModel.totalWordsCount,
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(7),
-                          bottomLeft: const Radius.circular(7),
-                          topRight: poolModel.totalWordsCount == poolModel.masteredWordsCount
-                              ? const Radius.circular(7)
-                              : Radius.zero,
-                          bottomRight: poolModel.totalWordsCount == poolModel.masteredWordsCount
-                              ? const Radius.circular(7)
-                              : Radius.zero
-                      )
-                    ),
-                  ),
-                )
-                : const SizedBox.shrink()
+              ProgressBarWidget(
+                total: poolModel.totalWordsCount,
+                fraction: poolModel.masteredWordsCount
               )
+              // ProgressBarWidget(
+              //     total: 50,
+              //     fraction: 50
+              // )
             ],
           ),
         ),
