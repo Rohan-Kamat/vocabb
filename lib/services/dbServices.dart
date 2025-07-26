@@ -46,7 +46,6 @@ class DbServices {
         final doc = querySnapshot.docs.first.reference;
         await doc.update({
           "words": FieldValue.arrayUnion([word.toJson()]),
-          "total"
         });
         print("Updated pool with new word");
         return true;
