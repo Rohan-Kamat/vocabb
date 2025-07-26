@@ -24,24 +24,15 @@ class CreatePoolPage extends StatelessWidget {
         )
       );
     } else {
-      PoolModel poolModel = PoolModel(
-          name: _poolNameController.text,
-          user: "Default",
-          description: _descriptionController.text,
-          rating: 0,
-          words: <WordModel>[],
-          totalWordsCount: 0,
-          masteredWordsCount: 0,
-          reviewingWordsCount: 0,
-          learningWordsCount: 0,
-          unvisitedWordsCount: 0
-      );
-
       LoadingProvider loadingProvider = Provider.of<LoadingProvider>(context, listen: false);
       loadingProvider.setLoading(true);
-      String? poolId = await DbServices.createPool(poolModel);
+      PoolModel? newPool = await PoolModel.createNewPool(
+          _poolNameController.text,
+          _descriptionController.text,
+          null
+      );
       loadingProvider.setLoading(false);
-      if (poolId != null) {
+      if (newPool != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text("Pool created", style: TextStyle(
@@ -52,8 +43,7 @@ class CreatePoolPage extends StatelessWidget {
         );
         Navigator.pop(context);
         Navigator.push(context, MaterialPageRoute(builder: (context) => PoolPage(
-          id: poolId,
-          poolModel: poolModel,
+          poolModel: newPool,
         )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

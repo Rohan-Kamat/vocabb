@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vocabb/providers/learningPoolProvider.dart';
+import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/providers/wordCardProvider.dart';
 import 'firebase_options.dart';
 import 'package:vocabb/pages/mainPage.dart';
@@ -22,7 +23,8 @@ void main() async {
             ChangeNotifierProvider(create: (context) => LoadingProvider()),
             ChangeNotifierProvider(create: (context) => WordMeaningsProvider()),
             ChangeNotifierProvider(create: (context) => WordCardProvider()),
-            ChangeNotifierProvider(create: (context) => LearningPoolProvider())
+            ChangeNotifierProvider(create: (context) => LearningPoolProvider()),
+            ChangeNotifierProvider(create: (context) => PoolProvider())
           ],
           child: MyApp()
       )

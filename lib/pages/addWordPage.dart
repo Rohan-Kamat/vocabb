@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
 import 'package:vocabb/providers/loadingProvider.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
@@ -9,10 +10,10 @@ import 'package:vocabb/widgets/selectMeaningWidget.dart';
 class AddWordPage extends StatelessWidget {
   const AddWordPage({
     super.key,
-    required this.poolName
+    required this.poolModel
   });
 
-  final String poolName;
+  final PoolModel poolModel;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class AddWordPage extends StatelessWidget {
             const SizedBox(height: 20,),
             addWordProvider.getNewWordState == NewWordState.addingWord
               ? NewWordWidget()
-              : SelectMeaningWidget(poolName: poolName)
+              : SelectMeaningWidget(poolModel: poolModel)
           ]
         ),
       ),

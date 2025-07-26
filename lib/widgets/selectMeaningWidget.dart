@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
+import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/providers/wordMeaningsProvider.dart';
 import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/meaningDisplayWidget.dart';
@@ -9,10 +11,10 @@ import 'package:vocabb/widgets/meaningDisplayWidget.dart';
 class SelectMeaningWidget extends StatefulWidget {
   const SelectMeaningWidget({
     super.key,
-    required this.poolName
+    required this.poolModel
   });
 
-  final String poolName;
+  final PoolModel poolModel;
 
   @override
   State<SelectMeaningWidget> createState() => _SelectMeaningWidgetState();
@@ -39,6 +41,8 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
   Widget build(BuildContext context) {
     AddWordProvider addWordProvider = Provider.of<AddWordProvider>(context);
     WordMeaningsProvider wordMeaningsProvider = Provider.of<WordMeaningsProvider>(context);
+    PoolProvider poolProvider = Provider.of<PoolProvider>(context);
+
     WordModel wordMeanings = wordMeaningsProvider.getWord!;
     List<Text> partsOfSpeech = wordMeanings.meanings.keys
                               .map((partOfSpeech) => Text(partOfSpeech))
@@ -68,13 +72,44 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
                     foregroundColor: Colors.white,
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     WordModel finalSelection = wordMeaningsProvider.getSelectedMeanings();
                     print(finalSelection.toJson());
-                    DbServices.addWordToPoolByPoolName(widget.poolName, finalSelection);
-                    addWordProvider.setNewWordState(NewWordState.addingWord);
-                    wordMeaningsProvider.resetState();
-                    Navigator.pop(context);
+                    if (!wordMeaningsProvider.areAnyMeaningsSelected()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Please select at least one meaning", style: TextStyle(
+                                  color: Colors.white
+                              )),
+                              backgroundColor: Colors.red
+                          )
+                      );
+                      return;
+                    }
+                    bool res = await poolProvider.addWordToPool(finalSelection);
+                    if (res) {
+                      addWordProvider.setNewWordState(NewWordState.addingWord);
+                      wordMeaningsProvider.resetState();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Word Added", style: TextStyle(
+                                  color: Colors.white
+                              )),
+                              backgroundColor: Colors.green
+                          )
+                      );
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Error Adding word to pool", style: TextStyle(
+                                  color: Colors.white
+                              )),
+                              backgroundColor: Colors.red
+                          )
+                      );
+                    }
+
                   },
                   child: const Text("Add"),
                 ),

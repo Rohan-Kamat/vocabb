@@ -1,7 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/services/dbServices.dart';
 
-class PoolModel {
+class PoolModel with ChangeNotifier{
+  String id;
   String name;
   String user;
   String? description;
@@ -14,6 +16,7 @@ class PoolModel {
   int unvisitedWordsCount;
 
   PoolModel({
+    required this.id,
     required this.name,
     this.description,
     required this.user,
@@ -41,8 +44,9 @@ class PoolModel {
     };
   }
 
-  static PoolModel fromJson(Map<String, dynamic> data) {
+  static PoolModel fromJson(String id, Map<String, dynamic> data) {
     return PoolModel(
+        id: id,
         name: data["name"],
         user: data["user"],
         description: data.containsKey("description") ? data["description"] : null,
@@ -63,6 +67,23 @@ class PoolModel {
     this.learningWordsCount = learningWordsCount;
     this.reviewingWordsCount = reviewingWordsCount;
     this.masteredWordsCount = masteredWordsCount;
+  }
+
+  static Future<PoolModel?> createNewPool(String name, String description, String? user) async {
+    return await DbServices.createPool(
+        name,
+        user ?? "Default",
+        description.isNotEmpty ? description : "No Description"
+    );
+  }
+
+  Future<bool> addWordToPool(WordModel wordModel) async {
+    bool res = await DbServices.addWordToPoolById(id, wordModel);
+    if (res) {
+      words.add(wordModel);
+      totalWordsCount += 1;
+    }
+    return res;
   }
 
 

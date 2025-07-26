@@ -128,8 +128,8 @@ class _ExplorePageState extends State<ExplorePage> with SingleTickerProviderStat
                     ListView.separated(
                         itemBuilder: (context, index) {
                           return PoolTabWidget(
-                              id: "DefaultId",
                               poolModel: PoolModel(
+                                id: "1234",
                                 name: "Name",
                                 user: "Default",
                                 rating: 3,

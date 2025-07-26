@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vocabb/models/poolModel.dart';
+import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/widgets/progressBarWidget.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
 
@@ -7,12 +9,10 @@ import '../pages/poolPage.dart';
 
 class PoolTabWidget extends StatelessWidget {
 
-  final String id;
   final PoolModel poolModel;
 
   const PoolTabWidget({
     super.key,
-    required this.id,
     required this.poolModel
   });
 
@@ -21,7 +21,6 @@ class PoolTabWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => PoolPage(
-            id: id,
             poolModel: poolModel
         )));
       },
@@ -64,20 +63,20 @@ class PoolTabWidget extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 18,),
-              Text("${poolModel.masteredWordsCount}/${poolModel.totalWordsCount}", style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                fontWeight: FontWeight.w300,
-                fontSize: 11
-              ),),
+              Consumer<PoolProvider>(
+                builder: (context, provider, _) {
+                  return Text("${poolModel.masteredWordsCount}/${poolModel.totalWordsCount}", style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 11
+                  ),);
+                }
+              ),
               SizedBox(height: 5),
               ProgressBarWidget(
                 total: poolModel.totalWordsCount,
                 fraction: poolModel.masteredWordsCount
               )
-              // ProgressBarWidget(
-              //     total: 50,
-              //     fraction: 50
-              // )
             ],
           ),
         ),

@@ -19,6 +19,7 @@ class ProgressBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 14,
+        width: double.infinity,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7),
             color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor

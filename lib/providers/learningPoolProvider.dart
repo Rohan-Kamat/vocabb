@@ -85,6 +85,7 @@ class LearningPoolProvider with ChangeNotifier {
     statusWiseCount[currentWord.learningStatus] = statusWiseCount[currentWord.learningStatus]! - 1;
     if (!testSuccess) {
       statusWiseCount[LearningStatus.learning] = statusWiseCount[LearningStatus.learning]! + 1;
+      currentWord.reviewCount = 0;
       return LearningStatus.learning;
     } else {
       switch(currentWord.learningStatus) {

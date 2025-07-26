@@ -6,10 +6,22 @@ class DbServices {
   static final db = FirebaseFirestore.instance;
   static const POOLS_COLLECTION_NAME = "pools";
 
-  static Future<String?> createPool(PoolModel poolModel) async {
+  static Future<PoolModel?> createPool(String name, String user, String description) async {
     try {
-      var document = await db.collection(POOLS_COLLECTION_NAME).add(poolModel.toJson());
-      return document.id;
+      Map<String, dynamic> poolInJson = {
+        "name": name,
+        "user": user,
+        "description": description,
+        "rating": 0,
+        "words": [],
+        "totalWordsCount": 0,
+        "masteredWordsCount": 0,
+        "reviewingWordsCount": 0,
+        "learningWordsCount": 0,
+        "unvisitedWordsCount": 0
+      };
+      var document = await db.collection(POOLS_COLLECTION_NAME).add(poolInJson);
+      return PoolModel.fromJson(document.id, poolInJson);
     } catch(e) {
       print("Error while adding pool to database");
     }
@@ -22,7 +34,7 @@ class DbServices {
       db.collection(POOLS_COLLECTION_NAME).get().then(
         (querySnapshot) {
           for (var pool in querySnapshot.docs) {
-            pools.add(PoolModel.fromJson(pool.data()));
+            pools.add(PoolModel.fromJson(pool.id, pool.data()));
           }
         },
         onError: (e) => print("Error while fetching all Pools: $e")
@@ -56,6 +68,24 @@ class DbServices {
     }
   }
 
+  static Future<bool> addWordToPoolById(String poolId, WordModel wordModel) async {
+    try {
+      print("Adding word ${wordModel.word} to pool id: $poolId");
+      final docRef = db.collection(POOLS_COLLECTION_NAME).doc(poolId);
+      final docSnapshot = await docRef.get();
+      int totalWordsCount = docSnapshot.data()!["totalWordsCount"];
+      await docRef.update({
+        "words": FieldValue.arrayUnion([wordModel.toJson()]),
+        "totalWordsCount": totalWordsCount + 1
+      });
+      print("Updated pool with new word");
+      return true;
+    } catch(e) {
+      print("Error trying to add a new word ${wordModel.word} to pool id $poolId: $e");
+      return false;
+    }
+  }
+
   static Future<PoolModel?> getPoolByName(String poolName) async {
     try {
       print("Fetching pool details for pool $poolName");
@@ -64,9 +94,9 @@ class DbServices {
       if (querySnapshot.docs.isEmpty) {
         print("No pool found with name $poolName");
       } else {
-        final poolInJson = querySnapshot.docs.first.data();
-        if (poolInJson.isNotEmpty) {
-          return PoolModel.fromJson(poolInJson);
+        final poolDoc = querySnapshot.docs.first;
+        if (poolDoc.data().isNotEmpty) {
+          return PoolModel.fromJson(poolDoc.id, poolDoc.data());
         } else {
           print("Doc not found for pool $poolName");
         }

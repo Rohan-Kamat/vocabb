@@ -91,14 +91,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                               ),
                             ),
                           );
-                        } else if (snapshot.data == null) {
-                          return Text("Something went wrong. Make sure your internet connection is stable and try again", style: TextStyle(
-                              color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
-                              fontSize: 15
-                          ), textAlign: TextAlign.center,);
                         }
+
                         var poolsList = snapshot.data!.docs;
-                        print(poolsList);
                         return poolsList.isEmpty
                           ? Text("No pools available. Create a pool by clicking on the plus icon on the bottom right corner", style: TextStyle(
                             color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
@@ -107,9 +102,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           : ListView.separated(
                               itemBuilder: (context, index) {
                                 return  PoolTabWidget(
-                                    id: poolsList[index].id,
                                     poolModel:  PoolModel.fromJson(
-                                        poolsList[index].data() as Map<String, dynamic>)
+                                        poolsList[index].id,
+                                        poolsList[index].data() as Map<String, dynamic>
+                                    )
                                 );
                               },
                               separatorBuilder: (context, index) {
@@ -142,8 +138,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     ListView.separated(
                         itemBuilder: (context, index) {
                           return  PoolTabWidget(
-                            id: "DefaultId",
                             poolModel: PoolModel(
+                                id: "1234",
                                 name: "Name",
                                 user: "Default",
                                 rating: 3,

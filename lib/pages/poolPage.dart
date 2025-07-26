@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/pages/addWordPage.dart';
 import 'package:vocabb/pages/learnPoolPage.dart';
+import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
 import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
 import 'package:vocabb/widgets/poolNameWidget.dart';
@@ -12,18 +14,19 @@ import '../consts/consts.dart';
 
 class PoolPage extends StatelessWidget {
 
-  final String id;
   final PoolModel poolModel;
 
   PoolPage({
     super.key,
-    required this.id,
     required this.poolModel
   });
 
 
   @override
   Widget build(BuildContext context) {
+    PoolProvider poolProvider = Provider.of<PoolProvider>(context);
+    poolProvider.initialize(poolModel);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(30),
@@ -123,21 +126,25 @@ class PoolPage extends StatelessWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.bold
                   ),),
-                  poolModel.words.isEmpty
-                    ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                            "Add a word by clicking on the plus icon on the bottom right corner",
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
-                              fontSize: 15,
-                            ),
-                            textAlign: TextAlign.center
+                  Consumer<PoolProvider>(
+                    builder: (context, provider, _) {
+                      return provider.getWordsList.isEmpty
+                      ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                              "Add a word by clicking on the plus icon on the bottom right corner",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                                fontSize: 15,
+                              ),
+                              textAlign: TextAlign.center
+                          ),
                         ),
-                      ),
-                    )
-                    : WordListWidget(poolModel: poolModel)
+                      )
+                      : WordListWidget(poolModel: poolModel);
+                    }
+                  )
                 ],
               )
             )
@@ -147,7 +154,7 @@ class PoolPage extends StatelessWidget {
       floatingActionButton: FloatingActionButtonWidget(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => AddWordPage(
-              poolName: poolModel.name
+              poolModel: poolModel
             )));
           }
       )

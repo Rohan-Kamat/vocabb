@@ -8,11 +8,17 @@ import 'package:vocabb/models/wordModel.dart';
 class WordMeaningsProvider with ChangeNotifier {
   WordModel? word;
   HashMap<String, List<bool>> isSelected = HashMap();
+  int totalMeaningsSelected = 0;
 
   WordModel? get getWord => word;
   bool isMeaningSelected(String partOfSpeech, int index) {
     return isSelected[partOfSpeech]![index];
   }
+
+  bool areAnyMeaningsSelected() {
+    return totalMeaningsSelected > 0;
+  }
+
   WordModel getSelectedMeanings() {
     HashMap<String, List<DefinitionModel>> meanings = HashMap();
     for (String partOfSpeech in isSelected.keys) {
@@ -46,6 +52,12 @@ class WordMeaningsProvider with ChangeNotifier {
   }
 
   void toggleMeaning(String partOfSpeech, int index) {
+    bool currentStatus = isSelected[partOfSpeech]![index];
+    if (currentStatus) {
+      totalMeaningsSelected -= 1;
+    } else {
+      totalMeaningsSelected += 1;
+    }
     isSelected[partOfSpeech]![index] = !isSelected[partOfSpeech]![index];
     notifyListeners();
   }
