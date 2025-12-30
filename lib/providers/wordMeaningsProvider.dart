@@ -32,6 +32,11 @@ class WordMeaningsProvider with ChangeNotifier {
         }
       }
     }
+
+    // If there are no meanings selected for a part of speech,
+    // Remove that part of speech from the selected meanings list
+    meanings.removeWhere((key, value) => value.isEmpty);
+
     return WordModel(
       word: word!.word,
       meanings: meanings,
