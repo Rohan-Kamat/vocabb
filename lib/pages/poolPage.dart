@@ -121,7 +121,7 @@ class PoolPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Words", style: TextStyle(
+                  Text("Words (${poolProvider.getWordsList.length})", style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontSize: 24,
                       fontWeight: FontWeight.bold
