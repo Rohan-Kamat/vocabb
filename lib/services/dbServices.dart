@@ -74,9 +74,11 @@ class DbServices {
       final docRef = db.collection(POOLS_COLLECTION_NAME).doc(poolId);
       final docSnapshot = await docRef.get();
       int totalWordsCount = docSnapshot.data()!["totalWordsCount"];
+      int unvisitedWordsCount = docSnapshot.data()!["unvisitedWordsCount"];
       await docRef.update({
         "words": FieldValue.arrayUnion([wordModel.toJson()]),
-        "totalWordsCount": totalWordsCount + 1
+        "totalWordsCount": totalWordsCount + 1,
+        "unvisitedWordsCount": unvisitedWordsCount + 1
       });
       print("Updated pool with new word");
       return true;

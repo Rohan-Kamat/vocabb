@@ -82,6 +82,7 @@ class PoolModel with ChangeNotifier{
     if (res) {
       words.add(wordModel);
       totalWordsCount += 1;
+      unvisitedWordsCount += 1;
     }
     return res;
   }
