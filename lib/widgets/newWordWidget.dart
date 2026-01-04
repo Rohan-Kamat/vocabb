@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vocabb/models/wordModel.dart';
+import 'package:vocabb/pages/viewAllMeaningsPage.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
 import 'package:vocabb/providers/loadingProvider.dart';
 import 'package:vocabb/providers/poolProvider.dart';
@@ -12,12 +13,15 @@ class NewWordWidget extends StatelessWidget {
 
   final TextEditingController _newWordController = TextEditingController();
   
-  bool _isWordAlreadyInThePool(String word, PoolProvider poolProvider) {
-    return poolProvider.getWordsList
-                       .any((wordModel) => wordModel.word.toLowerCase() == word.toLowerCase());
+  WordModel? _getExistingWordInPool(String word, PoolProvider poolProvider) {
+    for (WordModel wordModel in poolProvider.getWordsList) {
+      if (wordModel.word.toLowerCase() == word.toLowerCase()) {
+        return wordModel;
+      }
+    }
   }
 
-  void _showWordExistsDialog(BuildContext context) {
+  void _showWordExistsDialog(BuildContext context, WordModel wordModel) {
     showDialog(
         context: context,
         builder: (context) {
@@ -33,7 +37,7 @@ class NewWordWidget extends StatelessWidget {
                     foregroundColor: MaterialStateProperty.all(Colors.white)
                 ),
                 onPressed: () {
-                  print("Go to word pressed");
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ViewAllMeaningsPage(wordModel: wordModel)));
                 },
                 child: const Text("Go to Word"),
               ),
@@ -106,8 +110,9 @@ class NewWordWidget extends StatelessWidget {
                                   );
                                   return;
                                 }
-                                if (_isWordAlreadyInThePool(_newWordController.text, poolProvider)) {
-                                  _showWordExistsDialog(context);
+                                WordModel? existingWordInPool = _getExistingWordInPool(_newWordController.text, poolProvider);
+                                if (existingWordInPool != null) {
+                                  _showWordExistsDialog(context, existingWordInPool);
                                   return;
                                 }
                                 loadingProvider.setLoading(true);
