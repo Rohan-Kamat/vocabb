@@ -10,8 +10,6 @@ import 'package:vocabb/widgets/poolNameWidget.dart';
 import 'package:vocabb/widgets/ratingWidget.dart';
 import 'package:vocabb/widgets/wordListWidget.dart';
 
-import '../consts/consts.dart';
-
 class PoolPage extends StatelessWidget {
 
   final PoolModel poolModel;

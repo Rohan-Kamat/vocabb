@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
 import 'package:vocabb/providers/loadingProvider.dart';
+import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/providers/wordMeaningsProvider.dart';
 import 'package:vocabb/services/apiServices.dart';
 
@@ -10,12 +11,56 @@ class NewWordWidget extends StatelessWidget {
   NewWordWidget({super.key});
 
   final TextEditingController _newWordController = TextEditingController();
+  
+  bool _isWordAlreadyInThePool(String word, PoolProvider poolProvider) {
+    return poolProvider.getWordsList
+                       .any((wordModel) => wordModel.word.toLowerCase() == word.toLowerCase());
+  }
+
+  void _showWordExistsDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            content: Text("Word already exists in Pool."),
+            actions: [
+              OutlinedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                    foregroundColor: MaterialStateProperty.all(Colors.white)
+                ),
+                onPressed: () {
+                  print("Go to word pressed");
+                },
+                child: const Text("Go to Word"),
+              ),
+              OutlinedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                      side: const MaterialStatePropertyAll(BorderSide(color: Colors.red)),
+                      foregroundColor: MaterialStateProperty.all(Colors.red)
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel")
+              )
+            ],
+          );
+        }
+    );
+  }
 
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     AddWordProvider addWordProvider = Provider.of<AddWordProvider>(context);
     LoadingProvider loadingProvider = Provider.of<LoadingProvider>(context);
+    PoolProvider poolProvider = Provider.of<PoolProvider>(context);
     WordMeaningsProvider wordMeaningsProvider = Provider.of<WordMeaningsProvider>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,6 +106,10 @@ class NewWordWidget extends StatelessWidget {
                                   );
                                   return;
                                 }
+                                if (_isWordAlreadyInThePool(_newWordController.text, poolProvider)) {
+                                  _showWordExistsDialog(context);
+                                  return;
+                                }
                                 loadingProvider.setLoading(true);
                                 FocusScope.of(context).unfocus();
                                 WordModel? wordMeanings = await ApiServices.getWordMeanings(_newWordController.text);
@@ -79,20 +128,9 @@ class NewWordWidget extends StatelessWidget {
                             },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
-                            backgroundColor: Theme
-                                .of(context)
-                                .primaryColor,
+                            backgroundColor: Theme.of(context).primaryColor
                           ),
-                          child: provider.isLoading
-                              ? SizedBox(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  backgroundColor: Theme
-                                        .of(context)
-                                        .primaryColor,
-                                ),
-                              )
-                              : const Text("Add")
+                          child: const Text("Search")
                       );
                     }
                   ),
@@ -116,6 +154,21 @@ class NewWordWidget extends StatelessWidget {
                   ))
             ]
         ),
+        const SizedBox(height: 20),
+        SizedBox(
+          height: size.height * 0.6,
+          child: loadingProvider.isLoading
+            ? Center(
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+            )
+            : null
+        )
       ],
     );
   }

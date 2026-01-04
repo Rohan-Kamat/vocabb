@@ -31,22 +31,24 @@ class AddWordPage extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10,),
-            Text("New Word", style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                fontSize: 24,
-                fontWeight: FontWeight.bold
-            ),),
-            const SizedBox(height: 20,),
-            addWordProvider.getNewWordState == NewWordState.addingWord
-              ? NewWordWidget()
-              : SelectMeaningWidget(poolModel: poolModel)
-          ]
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10,),
+              Text("New Word", style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold
+              ),),
+              const SizedBox(height: 20,),
+              addWordProvider.getNewWordState == NewWordState.addingWord
+                ? NewWordWidget()
+                : SelectMeaningWidget(poolModel: poolModel)
+            ]
+          ),
         ),
       ),
     );
