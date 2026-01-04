@@ -5,7 +5,6 @@ import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/providers/addWordProvider.dart';
 import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/providers/wordMeaningsProvider.dart';
-import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/meaningDisplayWidget.dart';
 
 class SelectMeaningWidget extends StatefulWidget {
@@ -51,6 +50,11 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(wordMeanings.word, style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontSize: 24
+        )),
+        const SizedBox(height: 10),
         Text(
             "Select all the meanings you wish to add to the pool",
             style: TextStyle(
