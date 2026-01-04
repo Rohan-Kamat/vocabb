@@ -28,11 +28,14 @@ class _WordListWidgetState extends State<WordListWidget> {
   @override
   void initState() {
     wordStream = DbServices.getWordStreamByPoolId(widget.poolModel.id);
+    _isSelected = <bool>[];
+    for (int i = 0; i < widget.poolModel.words.length; i++) {
+      _isSelected.add(false);
+    }
   }
 
   void addStateForNewWord() {
-    _isSelected = <bool>[];
-    for (int i = 0; i < widget.poolModel.words.length; i++) {
+    for (int i = 0; i < widget.poolModel.words.length - _isSelected.length; i++) {
       _isSelected.add(false);
     }
   }
