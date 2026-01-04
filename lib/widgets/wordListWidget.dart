@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:vocabb/models/definitionModel.dart';
 import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/meaningDisplayWidget.dart';
-
-import '../consts/consts.dart';
 
 class WordListWidget extends StatefulWidget {
 
@@ -24,26 +22,25 @@ class WordListWidget extends StatefulWidget {
 class _WordListWidgetState extends State<WordListWidget> {
 
   late List<bool> _isSelected;
-  late Stream<DocumentSnapshot> wordStream;
+  late Stream<List<WordModel>> wordStream;
   int _previousIndex = 0;
 
   @override
   void initState() {
-    wordStream = DbServices.getWordStreamByPoolName(widget.poolModel.name);
+    wordStream = DbServices.getWordStreamByPoolId(widget.poolModel.id);
+  }
+
+  void addStateForNewWord() {
     _isSelected = <bool>[];
     for (int i = 0; i < widget.poolModel.words.length; i++) {
       _isSelected.add(false);
     }
   }
 
-  void addStateForNewWord() {
-    _isSelected.add(false);
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return StreamBuilder<DocumentSnapshot>(
+    return StreamBuilder<List<WordModel>>(
       stream: wordStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -56,13 +53,11 @@ class _WordListWidgetState extends State<WordListWidget> {
               color: Theme.of(context).colorScheme.secondary
           );
         }
-        List<WordModel> words = snapshot.data!.get("words")
-                                .map<WordModel>((word) => WordModel.fromJson(word))
-                                .toList();
+
+        List<WordModel> words = snapshot.data!;
         addStateForNewWord();
-        words.forEach((word) {
-          print(word.word);
-        });
+        print("_isSelected length: ${_isSelected.length}");
+        print("Words Length: ${words.length}");
         return words.isEmpty
           ? Text("No words in this pool. Add a word by clicking on the plus icon on the bottom right corner", style: TextStyle(
               color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),

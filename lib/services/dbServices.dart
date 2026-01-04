@@ -45,28 +45,6 @@ class DbServices {
       print("Exception occured on trying to fetch all pools: $e");
     }
   }
-  
-  static Future<bool> addWordToPoolByPoolName(String poolName, WordModel word) async {
-    try {
-      print("Adding word ${word.word} to pool $poolName");
-      final querySnapshot = await db.collection(POOLS_COLLECTION_NAME)
-          .where("name", isEqualTo: poolName).get();
-      if (querySnapshot.docs.isEmpty) {
-        print("No pool with name $poolName found");
-        return false;
-      } else {
-        final doc = querySnapshot.docs.first.reference;
-        await doc.update({
-          "words": FieldValue.arrayUnion([word.toJson()]),
-        });
-        print("Updated pool with new word");
-        return true;
-      }
-    } catch(e) {
-      print("Error trying to add a new word ${word.word} to pool $poolName: $e");
-      return false;
-    }
-  }
 
   static Future<bool> addWordToPoolById(String poolId, WordModel wordModel) async {
     try {
@@ -88,43 +66,47 @@ class DbServices {
     }
   }
 
-  static Future<PoolModel?> getPoolByName(String poolName) async {
+  static Future<PoolModel?> getPoolById(String poolId) async {
     try {
-      print("Fetching pool details for pool $poolName");
-      final querySnapshot = await db.collection(POOLS_COLLECTION_NAME)
-          .where("name", isEqualTo: poolName).get();
-      if (querySnapshot.docs.isEmpty) {
-        print("No pool found with name $poolName");
+      print("Fetching pool details for pool id: $poolId");
+      final docRef = db.collection(POOLS_COLLECTION_NAME).doc(poolId);
+      final docSnapshot = await docRef.get();
+      if (!docSnapshot.exists) {
+        print("The pool with ID: $poolId does not exist.");
+      } else if (docSnapshot.data() == null || docSnapshot.data()!.isEmpty) {
+        print("Pool with ID: $poolId has no data");
       } else {
-        final poolDoc = querySnapshot.docs.first;
-        if (poolDoc.data().isNotEmpty) {
-          return PoolModel.fromJson(poolDoc.id, poolDoc.data());
-        } else {
-          print("Doc not found for pool $poolName");
-        }
+        return PoolModel.fromJson(docRef.id, docSnapshot.data()!);
       }
     } catch (e) {
-      print("Error trying to fetch pool $poolName: $e");
+      print("Error trying to fetch pool with ID: $poolId: $e");
     }
   }
 
-  static Stream<DocumentSnapshot> getWordStreamByPoolName(String poolName) {
+  static Stream<List<WordModel>> getWordStreamByPoolId(String poolId) {
     return db.collection(POOLS_COLLECTION_NAME)
-             .where("name", isEqualTo: poolName)
-             .limit(1)
+             .doc(poolId)
              .snapshots()
-             .map((snapshot) => snapshot.docs.first);
+             .map((snapshot) {
+                if (snapshot.exists && snapshot.data() != null) {
+                  var wordListAsJson = snapshot.data()!['words'] as List<dynamic>? ?? [];
+                  return wordListAsJson.map<WordModel>((word) => WordModel.fromJson(word))
+                                       .toList();
+                }
+                return [];
+             });
   }
 
   static Future<bool> updatePool(PoolModel poolModel) async {
     try {
-      final querySnapshot = await db.collection(POOLS_COLLECTION_NAME)
-          .where("name", isEqualTo: poolModel.name).get();
-      if (querySnapshot.docs.isEmpty) {
+      final docRef = db.collection(POOLS_COLLECTION_NAME)
+          .doc(poolModel.id);
+      final docSnapshot = await docRef.get();
+      if (!docSnapshot.exists) {
         print("No pool found with name ${poolModel.name}");
         return false;
       } else {
-        await querySnapshot.docs.first.reference.set(poolModel.toJson());
+        await docRef.set(poolModel.toJson());
         return true;
       }
     } catch (e) {
