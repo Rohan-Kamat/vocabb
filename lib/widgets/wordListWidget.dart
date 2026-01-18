@@ -35,7 +35,8 @@ class _WordListWidgetState extends State<WordListWidget> {
   }
 
   void addStateForNewWord() {
-    for (int i = 0; i < widget.poolModel.words.length - _isSelected.length; i++) {
+    var isSelectedLength = _isSelected.length;
+    for (int i = 0; i < widget.poolModel.words.length - isSelectedLength; i++) {
       _isSelected.add(false);
     }
   }
@@ -59,8 +60,6 @@ class _WordListWidgetState extends State<WordListWidget> {
 
         List<WordModel> words = snapshot.data!;
         addStateForNewWord();
-        print("_isSelected length: ${_isSelected.length}");
-        print("Words Length: ${words.length}");
         return words.isEmpty
           ? Text("No words in this pool. Add a word by clicking on the plus icon on the bottom right corner", style: TextStyle(
               color: Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
@@ -102,7 +101,7 @@ class _WordListWidgetState extends State<WordListWidget> {
                         child: MeaningDisplayWidget(
                             wordModel: words[index],
                             selectable: false,
-                            hasViewAllButton: true,
+                            hasOptions: true,
                             partOfSpeech: firstPartOfSpeech,
                             definition: firstDefinition.definition,
                             example: firstDefinition.example

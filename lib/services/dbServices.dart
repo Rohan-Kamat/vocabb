@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 
@@ -111,6 +112,51 @@ class DbServices {
       }
     } catch (e) {
       print("Error updating pool ${poolModel.name}: $e");
+      return false;
+    }
+  }
+
+  static Future<bool> deleteWordFromPoolById(String poolId, WordModel wordModel) async {
+    try {
+      final docSnapshot = await db.collection(POOLS_COLLECTION_NAME)
+                            .doc(poolId)
+                            .get();
+
+      if (!docSnapshot.exists) {
+        print("Pool $poolId not found");
+        return false;
+      }
+
+      var wordsList = docSnapshot.data()!['words'] as List<dynamic>? ?? [];
+      int totalWordsCount = docSnapshot.data()!["totalWordsCount"];
+      String learningStatusField = switch(wordModel.learningStatus) {
+        LearningStatus.mastered => "masteredWordsCount",
+        LearningStatus.learning => "learningWordsCount",
+        LearningStatus.reviewing => "reviewingWordsCount",
+        LearningStatus.unknown => "unvisitedWordsCount"
+      };
+      int learningStatusFieldCount = docSnapshot.data()![learningStatusField];
+      Map<String, dynamic>? wordToDelete = wordsList.firstWhere(
+        (wordJson) => wordJson['word'].toLowerCase() == wordModel.word.toLowerCase(),
+        orElse: () => null,
+      ) as Map<String, dynamic>?;
+
+      if (wordToDelete == null) {
+        print("Word ${wordModel.word} not found in pool $poolId");
+        return false;
+      }
+
+      await db.collection(POOLS_COLLECTION_NAME)
+          .doc(poolId)
+          .update({
+            "words": FieldValue.arrayRemove([wordToDelete]),
+            "totalWordsCount": totalWordsCount - 1,
+            learningStatusField: learningStatusFieldCount - 1
+          });
+
+      return true;
+    } catch (e) {
+      print("Error deleting word ${wordModel.word} from pool $poolId: $e");
       return false;
     }
   }

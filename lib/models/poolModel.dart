@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/services/dbServices.dart';
 
-class PoolModel with ChangeNotifier{
+class PoolModel{
   String id;
   String name;
   String user;
@@ -84,6 +85,30 @@ class PoolModel with ChangeNotifier{
       totalWordsCount += 1;
       unvisitedWordsCount += 1;
     }
+    return res;
+  }
+
+  Future<bool> deleteWordFromPool(WordModel wordModel) async {
+    bool res = await DbServices.deleteWordFromPoolById(id, wordModel);
+    if (res) {
+      words.removeWhere((word) => word.word.toLowerCase() == wordModel.word.toLowerCase());
+      totalWordsCount -= 1;
+      switch(wordModel.learningStatus) {
+        case LearningStatus.learning:
+          learningWordsCount -= 1;
+          break;
+        case LearningStatus.mastered:
+          masteredWordsCount -= 1;
+          break;
+        case LearningStatus.reviewing:
+          reviewingWordsCount -= 1;
+          break;
+        case LearningStatus.unknown:
+          unvisitedWordsCount -= 1;
+          break;
+      }
+    }
+    print("Model: Wordlist len: ${words.length}");
     return res;
   }
 

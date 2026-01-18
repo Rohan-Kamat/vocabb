@@ -5,28 +5,38 @@ import 'package:vocabb/models/wordModel.dart';
 class PoolProvider with ChangeNotifier {
   late PoolModel poolModel;
 
-  bool addingWord = false;
-  bool addWordSuccess = false;
+  bool updatingWord = false;
 
-  List<WordModel> get getWordsList => poolModel.words;
-  String get getPoolName => poolModel.name;
-  bool get isAddingWord => addingWord;
-  bool get isAddWordSuccessful => addWordSuccess;
+  PoolModel get getPoolModel => poolModel;
+  bool get isUpdatingWord => updatingWord;
 
   void initialize(PoolModel poolModel) {
     this.poolModel = poolModel;
   }
 
   void setAddingWord(bool addingWord) {
-    this.addingWord = addingWord;
+    updatingWord = addingWord;
+    notifyListeners();
+  }
+
+  void setUpdatingWord(bool updatingWord) {
+    this.updatingWord = updatingWord;
     notifyListeners();
   }
 
   Future<bool> addWordToPool(WordModel wordModel) async {
-    addWordSuccess = false;
+    var updateWordSuccess = false;
     setAddingWord(true);
-    addWordSuccess = await poolModel.addWordToPool(wordModel);
+    updateWordSuccess = await poolModel.addWordToPool(wordModel);
     setAddingWord(false);
-    return addWordSuccess;
+    return updateWordSuccess;
+  }
+
+  Future<bool> deleteWordFromPool(WordModel wordModel) async {
+    var updateWordSuccess = false;
+    updateWordSuccess = await poolModel.deleteWordFromPool(wordModel);
+    print("Provider: Wordlist len: ${poolModel.words.length}");
+    notifyListeners();
+    return updateWordSuccess;
   }
 }

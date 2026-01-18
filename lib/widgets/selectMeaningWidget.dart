@@ -207,7 +207,7 @@ class _SelectMeaningWidgetState extends State<SelectMeaningWidget> with SingleTi
                             definition: meaning.value[index].definition,
                             example: meaning.value[index].example,
                             selectable: true,
-                            hasViewAllButton: false
+                            hasOptions: false
                         ),
                       );
                     },

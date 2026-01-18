@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/pages/viewAllMeaningsPage.dart';
+import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/providers/wordMeaningsProvider.dart';
 
 class MeaningDisplayWidget extends StatelessWidget {
@@ -12,7 +13,7 @@ class MeaningDisplayWidget extends StatelessWidget {
     required this.definition,
     this.example,
     required this.selectable,
-    required this.hasViewAllButton,
+    required this.hasOptions,
     this.index
   });
 
@@ -22,7 +23,71 @@ class MeaningDisplayWidget extends StatelessWidget {
   final int? index;
   final String? example;
   final bool selectable;
-  final bool hasViewAllButton;
+  final bool hasOptions;
+
+  static const DELETE_VALUE = "delete";
+  static const VIEW_ALL_VALUE = "view_all";
+
+  void _handleDelete(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            content: Text("Are you sure you want to delete the word form the pool?"),
+            actions: [
+              OutlinedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                    foregroundColor: MaterialStateProperty.all(Colors.white)
+                ),
+                onPressed: () async {
+                  PoolProvider poolProvider = Provider.of<PoolProvider>(context, listen: false);
+                  bool res = await poolProvider.deleteWordFromPool(wordModel!);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          res
+                            ? "Word Successfully deleted"
+                            : "Something went wrong. Please try again",
+                          style: const TextStyle(
+                            color: Colors.white
+                        )),
+                      backgroundColor: res
+                        ? Colors.green
+                        : Colors.red,
+                    )
+                  );
+                  Navigator.pop(context);
+                },
+                child: const Text("Yes"),
+              ),
+              OutlinedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                      side: const MaterialStatePropertyAll(BorderSide(color: Colors.red)),
+                      foregroundColor: MaterialStateProperty.all(Colors.red)
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel")
+              )
+            ],
+          );
+        }
+    );
+  }
+
+  void _handleViewAll(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => ViewAllMeaningsPage(
+            wordModel: wordModel!
+        )
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,25 +125,42 @@ class MeaningDisplayWidget extends StatelessWidget {
                   fontStyle: FontStyle.italic
               ),),
               Visibility(
-                visible: hasViewAllButton,
-                child: TextButton(
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.zero),
-                      minimumSize: MaterialStateProperty.all(Size.zero),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visible: hasOptions,
+                child: PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (String value) {
+                    switch (value) {
+                      case DELETE_VALUE:
+                        _handleDelete(context);
+                        break;
+                      case VIEW_ALL_VALUE:
+                        _handleViewAll(context);
+                        break;
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem<String>(
+                      value: DELETE_VALUE,
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, size: 20),
+                          SizedBox(width: 12),
+                          Text('Delete'),
+                        ],
+                      ),
                     ),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ViewAllMeaningsPage(
-                              wordModel: wordModel!
-                          )
-                      ));
-                    },
-                    child: Text("View All", style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12
-                    ),)),
+                    const PopupMenuItem<String>(
+                      value: VIEW_ALL_VALUE,
+                      child: Row(
+                        children: [
+                          Icon(Icons.visibility, size: 20),
+                          SizedBox(width: 12),
+                          Text('View all'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               )
             ],
           ),

@@ -14,7 +14,7 @@ class NewWordWidget extends StatelessWidget {
   final TextEditingController _newWordController = TextEditingController();
   
   WordModel? _getExistingWordInPool(String word, PoolProvider poolProvider) {
-    for (WordModel wordModel in poolProvider.getWordsList) {
+    for (WordModel wordModel in poolProvider.getPoolModel.words) {
       if (wordModel.word.toLowerCase() == word.toLowerCase()) {
         return wordModel;
       }

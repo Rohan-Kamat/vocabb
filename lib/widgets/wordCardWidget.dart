@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/providers/learningPoolProvider.dart';
 import 'package:vocabb/widgets/LearningStatusBoxWidget.dart';
@@ -69,7 +68,7 @@ class _WordCardWidgetState extends State<WordCardWidget> {
                       definition: widget.wordModel.meanings[partOfSpeech]![0].definition,
                       example: widget.wordModel.meanings[partOfSpeech]![0].example,
                       selectable: false,
-                      hasViewAllButton: true,
+                      hasOptions: true,
                       wordModel: widget.wordModel,
                     )
                   ],

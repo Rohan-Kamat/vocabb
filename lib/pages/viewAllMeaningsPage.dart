@@ -77,7 +77,7 @@ class _ViewAllMeaningsPageState extends State<ViewAllMeaningsPage> with SingleTi
                         definition: meaning.value[index].definition,
                         example: meaning.value[index].example,
                         selectable: false,
-                        hasViewAllButton: false
+                        hasOptions: false
                     );
                   },
                   separatorBuilder: (context, index) {
