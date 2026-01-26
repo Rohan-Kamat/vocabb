@@ -9,6 +9,7 @@ class PoolProvider with ChangeNotifier {
 
   PoolModel get getPoolModel => poolModel;
   bool get isUpdatingWord => updatingWord;
+  bool get isPoolEmpty => poolModel.words.isEmpty;
 
   void initialize(PoolModel poolModel) {
     this.poolModel = poolModel;

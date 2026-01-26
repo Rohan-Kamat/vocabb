@@ -91,15 +91,19 @@ class PoolPage extends StatelessWidget {
                           child: Consumer<PoolProvider>(
                             builder: (context, provider, _) {
                               return OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => LearnPoolPage(poolModel: provider.getPoolModel)));
-                                  },
+                                  onPressed: provider.isPoolEmpty
+                                    ? null
+                                    : () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => LearnPoolPage(poolModel: provider.getPoolModel)));
+                                    },
                                   style: OutlinedButton.styleFrom(
                                     backgroundColor: Theme.of(context).primaryColor,
                                     foregroundColor: Colors.white,
+                                    disabledBackgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),
+                                    disabledForegroundColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5)
                                   ),
                                   child: Text("Learn Pool")
                               );
