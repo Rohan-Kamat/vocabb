@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vocabb/pages/createPoolPage.dart';
 import 'package:vocabb/pages/explorePage.dart';
 import 'package:vocabb/pages/homePage.dart';
-import 'package:vocabb/pages/poolPage.dart';
 import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
 
 import '../widgets/appBarWidget.dart';
@@ -143,9 +141,6 @@ class _MainPageState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavBarItem(0),
-            _buildNavBarItem(1),
-            _buildNavBarItem(2),
-            _buildNavBarItem(3),
           ],
         ),
       ),
