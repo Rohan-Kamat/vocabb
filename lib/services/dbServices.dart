@@ -84,20 +84,6 @@ class DbServices {
     }
   }
 
-  static Stream<List<WordModel>> getWordStreamByPoolId(String poolId) {
-    return db.collection(POOLS_COLLECTION_NAME)
-             .doc(poolId)
-             .snapshots()
-             .map((snapshot) {
-                if (snapshot.exists && snapshot.data() != null) {
-                  var wordListAsJson = snapshot.data()!['words'] as List<dynamic>? ?? [];
-                  return wordListAsJson.map<WordModel>((word) => WordModel.fromJson(word))
-                                       .toList();
-                }
-                return [];
-             });
-  }
-
   static Future<bool> updatePool(PoolModel poolModel) async {
     try {
       final docRef = db.collection(POOLS_COLLECTION_NAME)
