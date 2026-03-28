@@ -37,6 +37,7 @@ class NewWordWidget extends StatelessWidget {
                     foregroundColor: MaterialStateProperty.all(Colors.white)
                 ),
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ViewAllMeaningsPage(wordModel: wordModel)));
                 },
                 child: const Text("Go to Word"),
