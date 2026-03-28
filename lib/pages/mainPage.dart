@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vocabb/pages/createPoolPage.dart';
+import 'package:vocabb/consts/enums.dart';
+import 'package:vocabb/pages/createOrUpdatePoolPage.dart';
 import 'package:vocabb/pages/explorePage.dart';
 import 'package:vocabb/pages/homePage.dart';
 import 'package:vocabb/widgets/floatingActionButtonWidget.dart';
@@ -55,7 +56,7 @@ class _MainPageState extends State<MainPage> {
                       onTap: () {
                         print("create pool");
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePoolPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CreateOrUpdatePoolPage(poolOperationType: PoolOperationType.create)));
                       },
                       child: Card(
                         elevation: 3,

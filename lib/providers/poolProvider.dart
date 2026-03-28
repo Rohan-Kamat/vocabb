@@ -40,4 +40,10 @@ class PoolProvider with ChangeNotifier {
     notifyListeners();
     return updateWordSuccess;
   }
+
+  Future<bool> updatePoolNameAndDescription(String poolName, String poolDescription) async {
+    bool res = await poolModel.updatePoolNameAndDescription(poolName, poolDescription);
+    notifyListeners();
+    return res;
+  }
 }

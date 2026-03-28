@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/models/wordModel.dart';
 import 'package:vocabb/pages/poolPage.dart';
 import 'package:vocabb/providers/loadingProvider.dart';
+import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/services/dbServices.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
 
-class CreatePoolPage extends StatelessWidget {
-  CreatePoolPage({super.key});
+class CreateOrUpdatePoolPage extends StatelessWidget {
+
+  final PoolOperationType poolOperationType;
+
+  CreateOrUpdatePoolPage({
+    super.key,
+    required this.poolOperationType
+  });
 
   final TextEditingController _poolNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  void _createPool(BuildContext context) async {
+  void _createOrUpdatePool(BuildContext context) async {
     if (_poolNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -26,31 +34,48 @@ class CreatePoolPage extends StatelessWidget {
     } else {
       LoadingProvider loadingProvider = Provider.of<LoadingProvider>(context, listen: false);
       loadingProvider.setLoading(true);
-      PoolModel? newPool = await PoolModel.createNewPool(
-          _poolNameController.text,
-          _descriptionController.text,
-          null
-      );
+      bool operationSuccess = false;
+      PoolModel? newPool;
+      if (poolOperationType == PoolOperationType.create) {
+        newPool = await PoolModel.createNewPool(
+            _poolNameController.text,
+            _descriptionController.text,
+            null
+        );
+        operationSuccess = newPool != null;
+      } else {
+        PoolProvider poolProvider = Provider.of<PoolProvider>(context, listen: false);
+        operationSuccess = await poolProvider.updatePoolNameAndDescription(
+            _poolNameController.text,
+            _descriptionController.text
+        );
+      }
       loadingProvider.setLoading(false);
-      if (newPool != null) {
+      if (operationSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("Pool created", style: TextStyle(
-                color: Colors.white
-              )),
+          SnackBar(
+              content: Text(
+                poolOperationType == PoolOperationType.create
+                  ? "Pool created"
+                  : "Pool Edited",
+                style: const TextStyle(color: Colors.white)),
             backgroundColor: Colors.green,
           )
         );
         Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PoolPage(
-          poolModel: newPool,
-        )));
+        if (poolOperationType == PoolOperationType.create) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PoolPage(
+            poolModel: newPool!,
+          )));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Error creating pool. Please try again", style: TextStyle(
-                  color: Colors.green
-              )),
+            SnackBar(
+              content: Text(
+                  poolOperationType == PoolOperationType.create
+                    ? "Error creating pool. Please try again"
+                    : "Error Editing pool. Please try again",
+                  style: const TextStyle(color: Colors.white)),
               backgroundColor: Colors.red,
             )
         );
@@ -61,6 +86,11 @@ class CreatePoolPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PoolProvider poolProvider = Provider.of<PoolProvider>(context);
+    if (poolOperationType == PoolOperationType.edit) {
+      _poolNameController.text = poolProvider.getPoolModel.name;
+      _descriptionController.text = poolProvider.getPoolModel.description ?? "";
+    }
     return Scaffold(
       appBar:  PreferredSize(
           preferredSize: const Size.fromHeight(35),
@@ -77,11 +107,16 @@ class CreatePoolPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Create New Pool", style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),),
+              Text(
+                poolOperationType == PoolOperationType.create
+                  ? "Create New Pool"
+                  : "Edit Pool",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24
+                )
+              ),
               const SizedBox(height: 20),
               Text("Pool name", style: TextStyle(
                 color: Theme.of(context).colorScheme.tertiary
@@ -124,8 +159,7 @@ class CreatePoolPage extends StatelessWidget {
                     foregroundColor: Colors.white
                   ),
                   onPressed: () {
-                    print("Creating pool");
-                    _createPool(context);
+                    _createOrUpdatePool(context);
                   },
                   child: Consumer<LoadingProvider>(
                     builder: (context, provider, _) {
@@ -136,9 +170,12 @@ class CreatePoolPage extends StatelessWidget {
                                 .of(context)
                                 .primaryColor,
                           )
-                        : const Text("Create", style: TextStyle(
-                            fontSize: 18
-                        ));
+                        : Text(
+                            poolOperationType == PoolOperationType.create
+                              ? "Create"
+                              : "Edit",
+                            style: const TextStyle(fontSize: 18)
+                        );
                     }
                   )
                 ),

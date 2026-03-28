@@ -8,3 +8,8 @@ enum LearningStatus{
 
   const LearningStatus(this.displayText);
 }
+
+enum PoolOperationType {
+  edit,
+  create
+}

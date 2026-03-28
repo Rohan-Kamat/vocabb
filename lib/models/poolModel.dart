@@ -112,5 +112,11 @@ class PoolModel{
     return res;
   }
 
+  Future<bool> updatePoolNameAndDescription(String poolName, String poolDescription) async {
+    name = poolName;
+    description = poolDescription.isEmpty ? null : poolDescription;
+    return await DbServices.updatePool(this);
+  }
+
 
 }

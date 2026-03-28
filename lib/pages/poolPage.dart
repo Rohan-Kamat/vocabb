@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/poolModel.dart';
 import 'package:vocabb/pages/addWordPage.dart';
+import 'package:vocabb/pages/createOrUpdatePoolPage.dart';
 import 'package:vocabb/pages/learnPoolPage.dart';
 import 'package:vocabb/providers/poolProvider.dart';
 import 'package:vocabb/widgets/appBarWidget.dart';
@@ -14,11 +16,16 @@ class PoolPage extends StatelessWidget {
 
   final PoolModel poolModel;
 
+  static const EDIT_MENU_OPTION = "edit";
+
   PoolPage({
     super.key,
     required this.poolModel
   });
 
+  void _handlePoolEdit() {
+    print("Edit pool clicked");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +58,42 @@ class PoolPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        PoolNameWidget(poolName: poolProvider.getPoolModel.name),
-                        IconButton(
-                            onPressed: () {
-                              print("Pool settings pressed");
-                            },
-                            icon: Icon(Icons.settings,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor))
+                        Consumer<PoolProvider>(builder: (context, provider, _) {
+                          return Text(poolProvider.getPoolModel.name, style: TextStyle(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 36,
+                          ));
+                        }),
+                        PopupMenuButton<String>(
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).scaffoldBackgroundColor
+                          ),
+                          onSelected: (String value) {
+                            switch (value) {
+                              case EDIT_MENU_OPTION:
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => CreateOrUpdatePoolPage(
+                                        poolOperationType: PoolOperationType.edit
+                                    )
+                                ));
+                                break;
+                            }
+                          },
+                          itemBuilder: (BuildContext context) => [
+                            const PopupMenuItem(
+                              value: EDIT_MENU_OPTION,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit),
+                                  SizedBox(width: 12),
+                                  Text("Edit")
+                                ],
+                              )
+                            )
+                          ]
+                        )
                       ],
                     ),
                     const SizedBox(
@@ -71,17 +106,21 @@ class PoolPage extends StatelessWidget {
                     const SizedBox(height: 8),
                     RatingWidget(rating: poolProvider.getPoolModel.rating, size: 16),
                     const SizedBox(height: 10),
-                    SizedBox(
-                      height: 60,
-                      child: Center(
-                        child: Text(
-                          "Desciption",
-                          style: TextStyle(
-                              color: Theme.of(context).scaffoldBackgroundColor),
-                        ),
-                      ),
+                    Consumer<PoolProvider>(
+                      builder: (context, provider, _) {
+                        return SizedBox(
+                          height: 60,
+                          child: Center(
+                            child: Text(
+                              "Desciption",
+                              style: TextStyle(
+                                  color: Theme.of(context).scaffoldBackgroundColor),
+                            ),
+                          ),
+                        );
+                      }
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
