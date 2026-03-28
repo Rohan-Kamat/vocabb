@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:vocabb/consts/enums.dart';
 import 'package:vocabb/models/poolModel.dart';
@@ -142,6 +143,8 @@ class CreateOrUpdatePoolPage extends StatelessWidget {
               const SizedBox(height: 8,),
               TextFormField(
                 controller: _descriptionController,
+                maxLength: 200,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Add a description"

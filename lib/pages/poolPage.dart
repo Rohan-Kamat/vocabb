@@ -22,9 +22,19 @@ class PoolPage extends StatelessWidget {
     super.key,
     required this.poolModel
   });
-
-  void _handlePoolEdit() {
-    print("Edit pool clicked");
+  
+  void _showDescription(BuildContext context, String description) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              content: Text(description)
+          );
+        }
+    );
   }
 
   @override
@@ -108,13 +118,22 @@ class PoolPage extends StatelessWidget {
                     const SizedBox(height: 10),
                     Consumer<PoolProvider>(
                       builder: (context, provider, _) {
-                        return SizedBox(
-                          height: 60,
-                          child: Center(
-                            child: Text(
-                              "Desciption",
-                              style: TextStyle(
-                                  color: Theme.of(context).scaffoldBackgroundColor),
+                        return InkWell(
+                          onTap: () {
+                            provider.getPoolModel.description != null
+                              ? _showDescription(context, provider.getPoolModel.description!)
+                              : null;
+                          },
+                          child: SizedBox(
+                            height: 60,
+                            child: Center(
+                              child: Text(
+                                poolProvider.getPoolModel.description ?? "Description",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Theme.of(context).scaffoldBackgroundColor),
+                              ),
                             ),
                           ),
                         );
